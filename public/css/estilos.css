@@ -70,6 +70,8 @@ body.login-screen{background:#f8f6fd;min-height:100vh}
 .pagination-links a{padding:8px 12px;background:#f4effb;color:#55308b;border-radius:8px;font-size:13px;min-width:34px;text-align:center}
 .pagination-links a.selected{background:#6537ae;color:white}
 .schedule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+/* Se a última linha tiver apenas um agendamento, o card ocupa as duas colunas. */
+.schedule-grid > .schedule-card:last-child:nth-child(odd){grid-column:1 / -1}
 .schedule-card{min-width:0;border:1px solid #eae3f1;background:#fff;border-radius:16px;box-shadow:0 5px 18px #2813430b;padding:22px}
 .schedule-head{display:flex;align-items:center;gap:13px;padding-bottom:18px;border-bottom:1px solid #f1edf6}
 .schedule-pet-photo{width:75px;height:75px;flex:none;border-radius:14px;object-fit:cover;background:#f5effb}
