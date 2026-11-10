@@ -96,3 +96,13 @@ body.login-screen{background:#f8f6fd;min-height:100vh}
 @media(max-width:1380px){.dash-charts{grid-template-columns:repeat(2,minmax(0,1fr))}.dash-charts .chart-panel:last-child{grid-column:1/-1}}
 @media(max-width:1080px){.schedule-grid{grid-template-columns:1fr}}
 @media(max-width:760px){.dash-charts{grid-template-columns:1fr}.dash-charts .chart-panel:last-child{grid-column:auto}.schedule-head{flex-wrap:wrap}.schedule-details{grid-template-columns:1fr}.schedule-actions{justify-content:stretch}.schedule-actions .btn,.schedule-actions form{flex:1}.schedule-actions button{width:100%}}
+
+/* DASHBOARD: cartões e atalhos são clicáveis, mas sem sublinhado. */
+.stat-card:hover,
+.stat-card:focus,
+.stat-card:hover *,
+.stat-card:focus *,
+.quick-actions a:hover,
+.quick-actions a:focus {
+    text-decoration: none;
+}
