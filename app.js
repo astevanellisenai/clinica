@@ -200,9 +200,31 @@ app.use((erro, req, res, next) => {
     });
 });
 
-// 13. EXECUÇÃO DO SERVIDOR
+// 13. TESTAR O BANCO E INICIAR O SERVIDOR
+// Antes de abrir o site, verificamos se o PostgreSQL responde.
 const porta = Number(process.env.PORT || 3001);
 
-app.listen(porta, () => {
-    console.log(`Clínica: http://localhost:${porta}`);
-});
+async function iniciarServidor() {
+    try {
+        // Essa consulta simples confirma que a conexão está funcionando.
+        const resultado = await BD.query('SELECT current_database() AS nome');
+
+        console.log('✅ PostgreSQL conectado com sucesso!');
+        console.log('📁 Banco de dados: ' + resultado.rows[0].nome);
+
+        // Só iniciamos o site depois de confirmar o banco.
+        app.listen(porta, () => {
+            console.log('✅ Servidor iniciado: http://localhost:' + porta);
+        });
+    } catch (erro) {
+        console.error('❌ Não foi possível conectar ao PostgreSQL.');
+        console.error('Motivo: ' + erro.message);
+        console.error('Verifique o PostgreSQL e a configuração DATABASE_URL no .env.');
+
+        // Encerra as conexões e informa falha ao terminal.
+        await BD.end();
+        process.exitCode = 1;
+    }
+}
+
+iniciarServidor();
