@@ -1,21 +1,19 @@
 const router=require('express').Router(),db=require('../db'),bcrypt=require('bcryptjs');
-function valores(req){return {nome:String(req.body.nome||'').trim(),email:String(req.body.email||'').trim().toLowerCase(),senha:String(req.body.senha||''),situacao:Number(req.body.situacao)}}
 const {parametros,consultar}=require('../lib/listagem');
-router.get('/',async(req,res,next)=>{try{
- const ordens={nome:'nome ASC,id ASC',nome_desc:'nome DESC,id DESC',email:'email ASC,id ASC',id_desc:'id DESC'};
- const q=parametros(req.query,ordens,'nome');
- const filtro=['1','0'].includes(q.filtro)?q.filtro:'';
- const values=['%'+q.busca+'%'];let where='(nome ILIKE $1 OR email ILIKE $1)';
- if(filtro){values.push(Number(filtro));where+=' AND situacao=
-router.get('/novo',(req,res)=>res.render('usuarios/form',{registro:{situacao:1},titulo:'Novo usuário',acao:'/usuarios/novo',erro:null}));
-router.post('/novo',async(req,res,next)=>{const u=valores(req);if(!u.nome||!u.email||!u.senha||![0,1].includes(u.situacao))return res.status(400).render('usuarios/form',{registro:u,titulo:'Novo usuário',acao:'/usuarios/novo',erro:'Preencha os campos obrigatórios.'});try{const hash=await bcrypt.hash(u.senha,10);await db.query('INSERT INTO usuarios(nome,email,senha_hash,situacao) VALUES($1,$2,$3,$4)',[u.nome,u.email,hash,u.situacao]);res.redirect('/usuarios')}catch(e){if(e.code==='23505')return res.status(400).render('usuarios/form',{registro:u,titulo:'Novo usuário',acao:'/usuarios/novo',erro:'Usuário já cadastrado'});next(e)}});
-router.get('/editar/:id',async(req,res,next)=>{try{const {rows}=await db.query('SELECT id,nome,email,situacao FROM usuarios WHERE id=$1',[req.params.id]);if(!rows.length)return res.sendStatus(404);res.render('usuarios/form',{registro:rows[0],titulo:'Editar usuário',acao:'/usuarios/editar/'+req.params.id,erro:null})}catch(e){next(e)}});
-router.post('/editar/:id',async(req,res,next)=>{const u=valores(req),id=Number(req.params.id);if(!u.nome||!u.email||![0,1].includes(u.situacao)||id===req.session.usuario.id&&u.situacao===0)return res.status(400).render('usuarios/form',{registro:{...u,id},titulo:'Editar usuário',acao:'/usuarios/editar/'+id,erro:'Verifique os campos; não desative sua própria conta.'});try{const args=[u.nome,u.email,u.situacao,id];let sql='UPDATE usuarios SET nome=$1,email=$2,situacao=$3 WHERE id=$4';if(u.senha){args.splice(3,0,await bcrypt.hash(u.senha,10));sql='UPDATE usuarios SET nome=$1,email=$2,situacao=$3,senha_hash=$4 WHERE id=$5'}const result=await db.query(sql,args);if(!result.rowCount)return res.sendStatus(404);if(id===req.session.usuario.id){req.session.usuario.nome=u.nome;req.session.usuario.email=u.email}res.redirect('/usuarios')}catch(e){if(e.code==='23505')return res.status(400).render('usuarios/form',{registro:{...u,id},titulo:'Editar usuário',acao:'/usuarios/editar/'+id,erro:'E-mail já cadastrado'});next(e)}});
-router.post('/excluir/:id',async(req,res,next)=>{try{const id=Number(req.params.id);if(id===req.session.usuario.id)return res.redirect('/usuarios?aviso='+encodeURIComponent('Não é possível excluir sua própria conta.'));await db.query('DELETE FROM usuarios WHERE id=$1',[id]);res.redirect('/usuarios')}catch(e){if(e.code==='23503')return res.redirect('/usuarios?aviso='+encodeURIComponent('Usuário possui registros relacionados.'));next(e)}});
-module.exports=router;+values.length;}
- const resultado=await consultar(db,{from:'usuarios',where,values,select:'id,nome,email,situacao',order:ordens[q.ordem],pagina:q.pagina});
- res.render('usuarios/index',{...resultado,...q,filtro,pagina:resultado.pagina,aviso:req.query.aviso||null});
-}catch(e){next(e)}});
+function valores(req){return {nome:String(req.body.nome||'').trim(),email:String(req.body.email||'').trim().toLowerCase(),senha:String(req.body.senha||''),situacao:Number(req.body.situacao)}}
+
+router.get('/',async(req,res,next)=>{
+ try{
+  const ordens={nome:'nome ASC,id ASC',nome_desc:'nome DESC,id DESC',email:'email ASC,id ASC',id_desc:'id DESC'};
+  const q=parametros(req.query,ordens,'nome');
+  const filtro=['1','0'].includes(q.filtro)?q.filtro:'';
+  const values=['%'+q.busca+'%'];
+  let where='(nome ILIKE $1 OR email ILIKE $1)';
+  if(filtro){values.push(Number(filtro));where+=' AND situacao=$'+values.length;}
+  const dados=await consultar(db,{from:'usuarios',where,values,select:'id,nome,email,situacao',order:ordens[q.ordem],pagina:q.pagina});
+  res.render('usuarios/index',{...dados,...q,filtro,pagina:dados.pagina,aviso:req.query.aviso||null});
+ }catch(e){next(e)}
+});
 router.get('/novo',(req,res)=>res.render('usuarios/form',{registro:{situacao:1},titulo:'Novo usuário',acao:'/usuarios/novo',erro:null}));
 router.post('/novo',async(req,res,next)=>{const u=valores(req);if(!u.nome||!u.email||!u.senha||![0,1].includes(u.situacao))return res.status(400).render('usuarios/form',{registro:u,titulo:'Novo usuário',acao:'/usuarios/novo',erro:'Preencha os campos obrigatórios.'});try{const hash=await bcrypt.hash(u.senha,10);await db.query('INSERT INTO usuarios(nome,email,senha_hash,situacao) VALUES($1,$2,$3,$4)',[u.nome,u.email,hash,u.situacao]);res.redirect('/usuarios')}catch(e){if(e.code==='23505')return res.status(400).render('usuarios/form',{registro:u,titulo:'Novo usuário',acao:'/usuarios/novo',erro:'Usuário já cadastrado'});next(e)}});
 router.get('/editar/:id',async(req,res,next)=>{try{const {rows}=await db.query('SELECT id,nome,email,situacao FROM usuarios WHERE id=$1',[req.params.id]);if(!rows.length)return res.sendStatus(404);res.render('usuarios/form',{registro:rows[0],titulo:'Editar usuário',acao:'/usuarios/editar/'+req.params.id,erro:null})}catch(e){next(e)}});
