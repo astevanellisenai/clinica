@@ -248,23 +248,7 @@ O arquivo **`clinica.sql` cria e popula todas as quatro tabelas**:
 
 Os CPFs fictícios dos tutores foram previamente criptografados em AES-256-GCM e estão inseridos no SQL em formato cifrado, compatível com a chave didática do `.env`.
 
-### Atualização de um banco de dados já existente
-
-Se você já executou `clinica.sql` anteriormente e possui dados que deseja preservar, **não execute novamente o script completo**, pois ele contém `DROP TABLE`.
-
-No pgAdmin, conectado ao banco `clinica`, execute apenas o comando abaixo se a coluna `imagem_url` ainda não existir:
-
-```sql
-ALTER TABLE pets ADD COLUMN IF NOT EXISTS imagem_url VARCHAR(255);
-```
-
-Instale a nova dependência de upload:
-
-```bash
-npm install
-```
-
-As fotos enviadas são armazenadas em `Public/img/pets/` e seus nomes são registrados em `pets.imagem_url`. Por padrão, fotos reais enviadas localmente são ignoradas pelo Git (só o diretório e a imagem-padrão são versionados). O formulário permite imagem opcional JPG, PNG ou WebP de até 3 MB; imagens antigas são mantidas quando nenhum novo arquivo é selecionado.
+As fotos demonstrativas de Mel, Luna e Thor são referenciadas no `clinica.sql` pelos nomes `mel.jpg`, `luna.jpg` e `thor.jpg`. Para que apareçam nas telas, esses arquivos devem existir em `Public/img/pets/`. O banco armazena apenas o nome do arquivo, não a imagem.
 
 ### 7. Iniciar a aplicação
 
@@ -499,15 +483,3 @@ O painel agora utiliza barra lateral roxa, cartões de indicadores, saudação n
 ## Listagens e indicadores
 
 Os quatro CRUDs utilizam pesquisa, ordenação por lista permitida e paginação no PostgreSQL com **5 registros por página**, como no projeto Eventos. Pet: filtro de espécie. Agendamento: situação e mês. Usuários: ativo/inativo. Os filtros são preservados entre as páginas. A agenda usa cards com fotografia; o dashboard exibe gráfico de status, espécies e evolução dos últimos seis meses, sem dependência externa de gráficos.
-
-### Fotos dos pets demonstrativos no banco local
-
-O `clinica.sql` já contém os UPDATEs dos três pets de demonstração (Mel, Luna e Thor). **Para uma instalação existente, não execute o arquivo inteiro**, pois ele contém `DROP TABLE`. Execute apenas estes comandos no pgAdmin, conectando ao banco `clinica`:
-
-```sql
-UPDATE pets SET imagem_url = 'mel.jpg' WHERE nome = 'Mel' AND especie = 'Cachorro';
-UPDATE pets SET imagem_url = 'luna.jpg' WHERE nome = 'Luna' AND especie = 'Gato';
-UPDATE pets SET imagem_url = 'thor.jpg' WHERE nome = 'Thor' AND especie = 'Cachorro';
-```
-
-Extraia as fotos do pacote `clinica_imagens_prontas.zip` para a pasta `Public/img/pets/` do computador local. O SQL guarda apenas o **nome** de cada arquivo, não seus bytes. O Git não versiona fotos nessa pasta por padrão. Confira com `SELECT nome, imagem_url FROM pets ORDER BY nome;`.
