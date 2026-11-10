@@ -72,7 +72,8 @@ router.get('/', async (req, res, next) => {
                 t.telefone
             `,
             order: ordens[filtros.ordem],
-            pagina: filtros.pagina
+            pagina: filtros.pagina,
+            limite: 4 // Duas linhas com dois cards em cada página.
         });
 
         res.render('agendamentos/index', {
