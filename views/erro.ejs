@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erro <%= status %> | Clínica Vet</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body style="background:#f7f5fb;">
+    <main style="max-width:960px;margin:7vh auto;padding:24px;">
+        <section class="panel">
+            <span class="eyebrow">CLÍNICA VET</span>
+            <h1>Erro <%= status %></h1>
+            <p><%= mensagem %></p>
+            <% if (detalhes) { %>
+                <h2 style="font-size:18px;">Detalhes técnicos (ambiente de desenvolvimento)</h2>
+                <pre style="white-space:pre-wrap;overflow-wrap:anywhere;background:#221833;color:#f1e9fc;padding:20px;border-radius:12px;font-size:13px;"><%= detalhes %></pre>
+            <% } %>
+            <a class="btn" href="/">Voltar ao início</a>
+        </section>
+    </main>
+</body>
+</html>
