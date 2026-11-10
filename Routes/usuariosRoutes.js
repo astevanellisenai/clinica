@@ -205,7 +205,7 @@ router.post('/editar/:id', async (req, res, next) => {
         res.redirect('/usuarios');
     } catch (erro) {
         if (erro.code === '23505') {
-            return res.status(400).render('usuarios/novo', {
+            return res.status(400).render('usuarios/editar', {
                 registro: { ...usuario, id },
                 titulo: 'Editar usuário',
                 acao: '/usuarios/editar/' + id,
