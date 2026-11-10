@@ -253,7 +253,7 @@ Os CPFs fictícios dos tutores foram previamente criptografados em AES-256-GCM e
 
 Se você já executou `clinica.sql` anteriormente e possui dados que deseja preservar, **não execute novamente o script completo**, pois ele contém `DROP TABLE`.
 
-Execute apenas esta migração no pgAdmin, conectado ao banco `clinica`:
+Execute a migração [migrations/001_foto_pets.sql](migrations/001_foto_pets.sql) no pgAdmin, conectado ao banco `clinica`. O conteúdo é:
 
 ```sql
 ALTER TABLE pets ADD COLUMN IF NOT EXISTS imagem_url VARCHAR(255);
@@ -265,7 +265,7 @@ Instale a nova dependência de upload:
 npm install
 ```
 
-As fotos enviadas são armazenadas em `Public/img/pets/` e seus nomes são registrados em `pets.imagem_url`. O formulário permite imagem opcional JPG, PNG ou WebP de até 3 MB; imagens antigas são mantidas quando nenhum novo arquivo é selecionado.
+As fotos enviadas são armazenadas em `Public/img/pets/` e seus nomes são registrados em `pets.imagem_url`. Por padrão, fotos reais enviadas localmente são ignoradas pelo Git (só o diretório e a imagem-padrão são versionados). O formulário permite imagem opcional JPG, PNG ou WebP de até 3 MB; imagens antigas são mantidas quando nenhum novo arquivo é selecionado.
 
 ### 7. Iniciar a aplicação
 
@@ -477,3 +477,16 @@ npm run dev        # Executa com Nodemon
 O projeto permite praticar os conceitos de **Backend, Node.js, Express, EJS, CRUD, autenticação, gerenciamento de sessões, criptografia, SQL, PostgreSQL, chaves primárias e estrangeiras, relacionamentos e documentação técnica**.
 
 Desenvolvido como referência de atividade prática para o curso **Técnico em Desenvolvimento de Sistemas — SENAI**, inspirado na arquitetura do projeto [Conecta Eventos](https://github.com/astevanellisenai/eventos).
+
+
+## 🎨 Identidade visual e estrutura de navegação
+
+A apresentação visual usa como referência o projeto Eventos:
+- Página pública em `/`, com logo, banner, apresentação, serviços e acesso administrativo.
+- Usuários já autenticados que abrem `/` são redirecionados para `/dashboard`.
+- Após o login, o usuário sempre é levado ao `/dashboard`.
+- Cabeçalho administrativo em **duas linhas**: logo + saudação + Sair acima; Dashboard, Tutores, Pets e Agendamentos abaixo.
+- Logo em `Public/img/landing/logo.svg`; ilustração em `Public/img/landing/hero.svg`.
+- O formulário de pets aceita fotografia opcional de até 3 MB (JPG, PNG, WebP), com prévia antes de salvar.
+
+**Atenção:** atualizar o repositório não altera o banco PostgreSQL automaticamente. Quem já tem o banco `clinica` deve executar apenas `migrations/001_foto_pets.sql` para adicionar a coluna de foto sem apagar registros.

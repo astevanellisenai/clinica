@@ -20,3 +20,8 @@ yarn-error.log*
 # Sistema operacional
 .DS_Store
 Thumbs.db
+
+# Fotos de pets enviadas no uso local (não versionar dados dos alunos)
+Public/img/pets/*
+!Public/img/pets/.gitkeep
+!Public/img/pets/sem-foto.svg

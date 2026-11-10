@@ -3,12 +3,16 @@ const express=require('express'),session=require('express-session'),bcrypt=requi
 if (!process.env.SESSION_SECRET) throw Error('Configure SESSION_SECRET no .env');
 if (process.env.NODE_ENV === 'production' && process.env.SESSION_SECRET.length < 32)
   throw Error('Em produção, SESSION_SECRET deve ter 32+ caracteres');
-app.set('view engine','ejs');app.use(express.static('Public'));app.use(express.urlencoded({extended:false}));
+app.set('view engine','ejs');app.use(express.static('Public'));
 // Multipart precisa ser processado antes da verificação CSRF.
 const uploadPet = require('./lib/uploadPet');
-app.use('/pets', (req,res,next) => req.method === 'POST' ? uploadPet.single('imagem')(req,res,next) : next());
 app.use(session({name:'clinica.sid',secret:process.env.SESSION_SECRET,resave:false,saveUninitialized:false,cookie:{httpOnly:true,sameSite:'lax',secure:process.env.NODE_ENV==='production',maxAge:30*60*1000}}));
 app.use(express.urlencoded({extended:false}));
+app.use('/pets',(req,res,next)=>{
+ if(req.method !== 'POST') return next();
+ if(!req.session.usuario) return res.redirect('/login');
+ uploadPet.single('imagem')(req,res,next);
+});
 app.use((req,res,next)=>{if(!req.session.csrf)req.session.csrf=crypto.randomBytes(24).toString('hex');res.locals.csrf=req.session.csrf;res.locals.usuario=req.session.usuario||null;
 if(req.method==='POST'){const x=String(req.body._csrf||''),y=req.session.csrf;if(x.length!==y.length||!crypto.timingSafeEqual(Buffer.from(x),Buffer.from(y)))return res.status(403).send('CSRF inválido');}next()});
 const login=(req,res,next)=>req.session.usuario?next():res.redirect('/login');
