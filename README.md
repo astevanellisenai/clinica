@@ -80,14 +80,14 @@ O sistema conta com uma **landing page pública**, identidade visual com logo pr
 ```text
 clinica/
 │
-├── Public/
+├── public/
 │   ├── css/
 │   │   └── estilos.css
 │   └── img/
 │       ├── landing/             # Logo e ilustração da página pública
 │       └── pets/                # Fotos enviadas pelos usuários
 │
-├── Routes/
+├── routes/
 │   ├── tutoresRoutes.js
 │   ├── petsRoutes.js
 │   └── agendamentosRoutes.js
@@ -339,7 +339,7 @@ Armazena os animais e seu tutor.
 | `nome` | VARCHAR(100) | Nome do animal |
 | `especie` | VARCHAR(70) | Espécie |
 | `raca` | VARCHAR(100) | Raça |
-| `imagem_url` | VARCHAR(255) | Nome da foto armazenada em `Public/img/pets` |
+| `imagem_url` | VARCHAR(255) | Nome da foto armazenada em `public/img/pets` |
 | `tutor_id` | INTEGER | Chave estrangeira para `tutores.id` |
 
 ### Tabela `agendamentos`
@@ -468,7 +468,7 @@ A apresentação visual usa como referência o projeto Eventos:
 - Usuários já autenticados que abrem `/` são redirecionados para `/dashboard`.
 - Após o login, o usuário sempre é levado ao `/dashboard`.
 - Cabeçalho administrativo em **duas linhas**: logo + saudação + Sair acima; Dashboard, Tutores, Pets e Agendamentos abaixo.
-- Logo em `Public/img/landing/logo.svg`; ilustração em `Public/img/landing/hero.svg`.
+- Logo em `public/img/landing/logo.svg`; ilustração em `public/img/landing/hero.svg`.
 - O formulário de pets aceita fotografia opcional de até 3 MB (JPG, PNG, WebP), com prévia antes de salvar.
 
 **Atenção:** atualizar o código pelo Git não modifica o PostgreSQL. Para um banco novo, execute apenas `clinica.sql`, que contém todas as tabelas e os registros de exemplo. Não execute esse script em um banco que contenha dados que precisam ser preservados.

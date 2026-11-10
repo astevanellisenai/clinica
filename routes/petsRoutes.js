@@ -16,7 +16,7 @@ async function apagarImagem(nome) {
     if (!nome) return;
 
     const arquivo = path.join(
-        __dirname, '..', 'Public', 'img', 'pets', path.basename(nome)
+        __dirname, '..', 'public', 'img', 'pets', path.basename(nome)
     );
 
     try {

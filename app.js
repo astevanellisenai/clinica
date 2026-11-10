@@ -25,7 +25,7 @@ if (!process.env.SESSION_SECRET) {
 app.set('view engine', 'ejs');
 
 // Disponibiliza CSS, imagens e outros arquivos da pasta Public.
-app.use(express.static('Public'));
+app.use(express.static('public'));
 
 // Permite receber os campos dos formulários HTML.
 app.use(express.urlencoded({
@@ -155,8 +155,8 @@ app.post('/logout', exigirLogin, (req, res, next) => {
 });
 
 // 10. ROTAS DO DASHBOARD
-// Os indicadores foram separados em Routes/dashboardRoutes.js.
-const dashboardRoutes = require('./Routes/dashboardRoutes');
+// Os indicadores foram separados em routes/dashboardRoutes.js.
+const dashboardRoutes = require('./routes/dashboardRoutes');
 app.use('/dashboard', exigirLogin, dashboardRoutes);
 
 // 11. ROTAS DOS MÓDULOS (CRUD)
@@ -164,19 +164,19 @@ app.use('/dashboard', exigirLogin, dashboardRoutes);
 // Todas as rotas abaixo exigem login, como no projeto Eventos.
 
 // Rotas de Tutores.
-const tutoresRoutes = require('./Routes/tutoresRoutes');
+const tutoresRoutes = require('./routes/tutoresRoutes');
 app.use('/tutores', exigirLogin, tutoresRoutes);
 
 // Rotas de Pets.
-const petsRoutes = require('./Routes/petsRoutes');
+const petsRoutes = require('./routes/petsRoutes');
 app.use('/pets', exigirLogin, petsRoutes);
 
 // Rotas de Agendamentos.
-const agendamentosRoutes = require('./Routes/agendamentosRoutes');
+const agendamentosRoutes = require('./routes/agendamentosRoutes');
 app.use('/agendamentos', exigirLogin, agendamentosRoutes);
 
 // Rotas de Usuários.
-const usuariosRoutes = require('./Routes/usuariosRoutes');
+const usuariosRoutes = require('./routes/usuariosRoutes');
 app.use('/usuarios', exigirLogin, usuariosRoutes);
 
 // 12. TRATAMENTO DE ERROS

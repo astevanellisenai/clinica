@@ -21,6 +21,6 @@ yarn-error.log*
 Thumbs.db
 
 # Fotos de pets enviadas no uso local (não versionar dados dos alunos)
-Public/img/pets/*
-!Public/img/pets/.gitkeep
-!Public/img/pets/sem-foto.svg
+public/img/pets/*
+!public/img/pets/.gitkeep
+!public/img/pets/sem-foto.svg
