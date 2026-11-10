@@ -18,7 +18,7 @@ Informatizar o gerenciamento de tutores, pets e agendamentos, protegendo dados d
 - Banco PostgreSQL: PK, FK, UNIQUE e CHECK.
 - CPF criptografado AES-256-GCM com chave em variável de ambiente, fora do Git.
 - Senhas com hash bcrypt; SQL parametrizado; proteção CSRF e cookie HttpOnly.
-- O arquivo clinica.sql prepara estrutura e 3 usuários, e seed.js cria 3 tutores + 3 pets + 3 agendamentos com CPF cifrado.
+- O arquivo clinica.sql prepara estrutura e inclui 3 usuários, 3 tutores, 3 pets e 3 agendamentos; os CPFs fictícios são pré-criptografados e usam a chave didática de .env.example.
 
 ## Limitações e melhorias para produção
 Armazenamento persistente de sessões, rate limiting no login, HTTPS, controle por perfis, auditoria e política de retenção LGPD.

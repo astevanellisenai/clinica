@@ -52,7 +52,7 @@ O sistema possui uma **área administrativa protegida por login**, na qual usuá
 - Quatro tabelas relacionadas: `usuarios`, `tutores`, `pets` e `agendamentos`.
 - Chaves primárias, chaves estrangeiras, campos obrigatórios e restrições.
 - Três usuários de exemplo criados pelo SQL.
-- Três tutores, três pets e três agendamentos criados pelo script de dados iniciais `seed.js`.
+- Três tutores, três pets e três agendamentos inseridos diretamente pelo `clinica.sql` (sem `seed.js`).
 - Senhas de usuários armazenadas com hash bcrypt.
 
 ---
@@ -115,8 +115,7 @@ clinica/
 │
 ├── app.js                        # Aplicação e autenticação
 ├── db.js                         # Conexão PostgreSQL
-├── clinica.sql                   # Estrutura e 3 usuários iniciais
-├── seed.js                       # Tutores, pets e agendamentos de exemplo
+├── clinica.sql                   # Estrutura + dados de todas as tabelas
 ├── package.json
 ├── .env.example
 ├── .gitignore
@@ -208,31 +207,38 @@ Edite o novo arquivo para preencher os valores do seu ambiente:
 PORT=3001
 DATABASE_URL=postgres://postgres:SUA_SENHA@localhost:5432/clinica
 SESSION_SECRET=SUBSTITUA_POR_UM_SEGREDO_COM_PELO_MENOS_32_CARACTERES
-CPF_ENCRYPTION_KEY=SUBSTITUA_POR_UMA_CHAVE_HEXADECIMAL_DE_64_CARACTERES
+CPF_ENCRYPTION_KEY=9749886e57235857555b0653771e9a78d461e3904bf8fd08d67b2d22f465d95d
 NODE_ENV=development
 ```
 
-Gere uma chave aleatória para a criptografia do CPF:
+**Chave de CPF dos dados fictícios:** o arquivo `.env.example` já contém uma chave didática, utilizada para cifrar os CPFs de teste incluídos no `clinica.sql`. Copie-a sem modificar se quiser abrir os registros de exemplo.
+
+**Atenção:** essa chave é pública e serve **somente para testes com dados fictícios**. Para cadastrar dados pessoais reais, gere outra chave segura, remova os dados fictícios e recrie o banco ou realize uma migração controlada de criptografia. Nunca publique uma chave de produção no GitHub.
+
+Para gerar sua própria chave:
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-O resultado desse comando deve ser usado como valor de `CPF_ENCRYPTION_KEY`. Não publique essa chave no GitHub.
-
-**Importante:** não altere nem perca a chave de CPF depois de cadastrar os tutores: sem a chave original, os CPFs armazenados não poderão ser descriptografados.
+**Importante:** não altere ou perca a chave de CPF depois de cadastrar dados: sem a chave correta, os CPFs existentes não poderão ser descriptografados.
 
 Se a senha PostgreSQL tiver caracteres especiais, codifique-os corretamente na URL de conexão.
 
-### 6. Inserir os dados de exemplo
+### 6. Dados de exemplo já incluídos no SQL
 
-Depois de executar `clinica.sql` e configurar `.env`, rode:
+Não é necessário executar `npm run seed` nem nenhum script JavaScript para popular o banco.
 
-```bash
-npm run seed
-```
+O arquivo **`clinica.sql` cria e popula todas as quatro tabelas**:
 
-Esse comando insere os três tutores, os três pets e os três agendamentos de demonstração. A inserção dos tutores é realizada no Node.js para que os CPFs cheguem ao banco **já criptografados**.
+| Tabela | Quantidade inicial |
+|---|---:|
+| `usuarios` | 3 |
+| `tutores` | 3 |
+| `pets` | 3 |
+| `agendamentos` | 3 |
+
+Os CPFs fictícios dos tutores foram previamente criptografados em AES-256-GCM e estão inseridos no SQL em formato cifrado, compatível com a chave didática do `.env.example`.
 
 ### 7. Iniciar a aplicação
 
@@ -377,10 +383,10 @@ O diagrama completo também está disponível em [docs/der.md](docs/der.md), usa
 
 O arquivo `lib/cpf.js` utiliza criptografia autenticada **AES-256-GCM**, com chave definida em `CPF_ENCRYPTION_KEY`.
 
-- A aplicação criptografa os 11 dígitos antes da inserção.
+- A aplicação criptografa os 11 dígitos antes de novos cadastros; os exemplos do SQL já estão criptografados.
 - O banco recebe os dados cifrados, não o CPF em texto puro.
 - A listagem administrativa descriptografa os CPFs para exibição aos usuários autenticados.
-- A chave deve ser armazenada de forma protegida e não pode ser enviada ao repositório.
+- Em produção, a chave deve ser armazenada de forma protegida e não pode ser enviada ao repositório. A chave didática do `.env.example` é pública e deve ser usada apenas para dados fictícios.
 
 **Observação sobre LGPD:** criptografar o CPF é um controle importante, mas não basta, por si só, para garantir conformidade com toda a LGPD.
 
@@ -404,8 +410,7 @@ O projeto é uma base **didática**. Antes de disponibilizá-lo para uma clínic
 |---|---|
 | [docs/requisitos.md](docs/requisitos.md) | Objetivo, requisitos e regras de negócio |
 | [docs/der.md](docs/der.md) | Diagrama entidade-relacionamento |
-| [clinica.sql](clinica.sql) | Estrutura PostgreSQL e usuários de teste |
-| [seed.js](seed.js) | População de tutores, pets e agendamentos |
+| [clinica.sql](clinica.sql) | Estrutura PostgreSQL e dados de teste para todas as tabelas |
 | [docs/prova_clinica.pdf](docs/prova_clinica.pdf) | Versão textual de referência ao enunciado da prova |
 
 **Nota:** `docs/prova_clinica.pdf` é uma versão textual de referência criada para o projeto; não é uma reprodução visual integral do PDF original fornecido na atividade.
@@ -435,7 +440,6 @@ Este roteiro permite conferir as funcionalidades principais, mas **não substitu
 npm install        # Instala dependências
 npm start          # Executa o servidor
 npm run dev        # Executa com Nodemon
-npm run seed       # Insere tutores, pets e agendamentos iniciais
 ```
 
 ---

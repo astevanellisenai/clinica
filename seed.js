@@ -1,8 +1,0 @@
-require('dotenv').config();const db=require('./db'),{cifrar}=require('./lib/cpf');
-(async()=>{const c=await db.connect();try{await c.query('BEGIN');const {rows}=await c.query('SELECT count(*)::int n FROM tutores');if(rows[0].n){await c.query('ROLLBACK');console.log('Seed já executada');return}
-const dados=[['Maria Oliveira','maria@example.test','18999990001','11144477735'],['João Pereira','joao@example.test','18999990002','52998224725'],['Fernanda Lima','fernanda@example.test','18999990003','12345678909']];const ids=[];
-for(const t of dados){const x=await c.query('INSERT INTO tutores(nome,email,telefone,cpf_criptografado) VALUES($1,$2,$3,$4) RETURNING id',[t[0],t[1],t[2],cifrar(t[3])]);ids.push(x.rows[0].id)}
-const pets=[['Mel','Cachorro','Vira-lata',ids[0]],['Luna','Gato','Siamês',ids[1]],['Thor','Cachorro','Labrador',ids[2]]],pids=[];
-for(const p of pets){const x=await c.query('INSERT INTO pets(nome,especie,raca,tutor_id) VALUES($1,$2,$3,$4) RETURNING id',p);pids.push(x.rows[0].id)}
-for(const a of [[pids[0],'2026-12-02 09:00','Vacinação anual','agendado'],[pids[1],'2026-12-11 14:30','Consulta','agendado'],[pids[2],'2027-01-08 10:00','Exames','agendado']])await c.query('INSERT INTO agendamentos(pet_id,data_agendamento,descricao,status) VALUES($1,$2,$3,$4)',a);
-await c.query('COMMIT');console.log('Inseridos 3 tutores, 3 pets e 3 agendamentos')}catch(e){await c.query('ROLLBACK');throw e}finally{c.release();await db.end()}})().catch(e=>{console.error(e);process.exitCode=1});

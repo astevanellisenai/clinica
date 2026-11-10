@@ -5,8 +5,7 @@
   "description": "Clínica veterinária - prova prática",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js",
-    "seed": "node seed.js"
+    "dev": "nodemon app.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
