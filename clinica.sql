@@ -22,30 +22,30 @@ INSERT INTO tutores(nome,email,telefone,cpf_criptografado) VALUES
 ('João Pereira','joao@example.test','18999990002','BX9cu2tvIwKWiPRFzFYF0ucMZ8SWu/jFA0rt06NXfkBb4Atrp2Xo'),
 ('Fernanda Lima','fernanda@example.test','18999990003','CSzUEaPbBIZbrF6+aQ9eitEVIwW3dOFFNqGrWAS+ki42cgl84p7N');
 
--- PETS — vinculados aos três tutores
-INSERT INTO pets(nome,especie,raca,tutor_id) VALUES
-('Mel','Cachorro','Vira-lata',(SELECT id FROM tutores WHERE email='maria@example.test')),
-('Luna','Gato','Siamês',(SELECT id FROM tutores WHERE email='joao@example.test')),
-('Thor','Cachorro','Labrador',(SELECT id FROM tutores WHERE email='fernanda@example.test'));
+-- PETS — sete registros, todos vinculados aos tutores
+-- As fotos devem existir em public/img/pets/ no computador local.
+INSERT INTO pets (nome, especie, raca, imagem_url, tutor_id) VALUES
+('Mel', 'Cachorro', 'Vira-lata', 'mel.jpg', (SELECT id FROM tutores WHERE email = 'maria@example.test')),
+('Luna', 'Gato', 'Siamês', 'luna.jpg', (SELECT id FROM tutores WHERE email = 'joao@example.test')),
+('Thor', 'Cachorro', 'Labrador', 'thor.jpg', (SELECT id FROM tutores WHERE email = 'fernanda@example.test')),
+('Pipoca', 'Ave', 'Calopsita', 'pipoca.jpg', (SELECT id FROM tutores WHERE email = 'maria@example.test')),
+('Nino', 'Coelho', 'Mini Lop', 'nino.jpg', (SELECT id FROM tutores WHERE email = 'joao@example.test')),
+('Nemo', 'Peixe', 'Kinguiô', 'nemo.jpg', (SELECT id FROM tutores WHERE email = 'fernanda@example.test')),
+('Kiwi', 'Ave', 'Periquito-australiano', 'kiwi.jpg', (SELECT id FROM tutores WHERE email = 'maria@example.test'));
 
--- AGENDAMENTOS — vinculados aos pets
-INSERT INTO agendamentos(pet_id,data_agendamento,descricao,status) VALUES
-((SELECT id FROM pets WHERE nome='Mel'),'2026-12-02 09:00','Vacinação anual','agendado'),
-((SELECT id FROM pets WHERE nome='Luna'),'2026-12-11 14:30','Consulta','agendado'),
-((SELECT id FROM pets WHERE nome='Thor'),'2027-01-08 10:00','Exames','agendado');
-
--- =====================================================
--- FOTOS DOS PETS DE EXEMPLO
--- Os arquivos mel.jpg, luna.jpg e thor.jpg devem estar
--- em Public/img/pets/ no projeto local.
--- Estes UPDATEs podem ser repetidos sem duplicar dados.
--- Para bancos existentes, execute SOMENTE este bloco.
--- =====================================================
-UPDATE pets SET imagem_url = 'mel.jpg'
-WHERE nome = 'Mel' AND especie = 'Cachorro';
-
-UPDATE pets SET imagem_url = 'luna.jpg'
-WHERE nome = 'Luna' AND especie = 'Gato';
-
-UPDATE pets SET imagem_url = 'thor.jpg'
-WHERE nome = 'Thor' AND especie = 'Cachorro';
+-- AGENDAMENTOS — três originais e dez novos exemplos
+-- Situações possíveis: agendado, concluido e cancelado.
+INSERT INTO agendamentos (pet_id, data_agendamento, descricao, status) VALUES
+((SELECT id FROM pets WHERE nome = 'Mel'), '2026-12-02 09:00', 'Vacinação anual', 'agendado'),
+((SELECT id FROM pets WHERE nome = 'Luna'), '2026-12-11 14:30', 'Consulta', 'agendado'),
+((SELECT id FROM pets WHERE nome = 'Thor'), '2027-01-08 10:00', 'Exames', 'agendado'),
+((SELECT id FROM pets WHERE nome = 'Mel'), '2026-10-05 09:00', 'Vacinação anual realizada', 'concluido'),
+((SELECT id FROM pets WHERE nome = 'Luna'), '2026-10-12 14:30', 'Consulta de rotina realizada', 'concluido'),
+((SELECT id FROM pets WHERE nome = 'Pipoca'), '2026-10-20 10:00', 'Avaliação clínica da calopsita', 'concluido'),
+((SELECT id FROM pets WHERE nome = 'Nino'), '2026-11-04 15:00', 'Avaliação odontológica do coelho', 'concluido'),
+((SELECT id FROM pets WHERE nome = 'Thor'), '2026-10-15 08:30', 'Exame de sangue cancelado pelo tutor', 'cancelado'),
+((SELECT id FROM pets WHERE nome = 'Kiwi'), '2026-10-28 11:00', 'Consulta de acompanhamento cancelada', 'cancelado'),
+((SELECT id FROM pets WHERE nome = 'Nemo'), '2026-11-06 16:00', 'Avaliação de saúde do peixe cancelada', 'cancelado'),
+((SELECT id FROM pets WHERE nome = 'Mel'), '2026-11-18 09:30', 'Retorno para avaliação veterinária', 'agendado'),
+((SELECT id FROM pets WHERE nome = 'Nino'), '2026-11-24 14:00', 'Consulta preventiva', 'agendado'),
+((SELECT id FROM pets WHERE nome = 'Kiwi'), '2026-12-03 10:30', 'Avaliação de saúde e alimentação', 'agendado');
