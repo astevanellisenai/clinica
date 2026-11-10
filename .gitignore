@@ -2,8 +2,11 @@
 node_modules/
 
 # Variáveis de ambiente
-.env
+# Exceção didática: o .env desta clínica contém apenas credenciais públicas de teste.
+# Em qualquer ambiente real, remover a exceção abaixo e nunca versionar .env.
 .env.*
+!.env
+!.env.example
 
 # Logs
 *.log

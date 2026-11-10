@@ -117,6 +117,7 @@ clinica/
 ├── db.js                         # Conexão PostgreSQL
 ├── clinica.sql                   # Estrutura + dados de todas as tabelas
 ├── package.json
+├── .env                         # Configuração didática pronta
 ├── .env.example
 ├── .gitignore
 └── README.md
@@ -207,39 +208,27 @@ SELECT crypt('Clinica@123', gen_salt('bf'));
 
 **Observação:** o comando `CREATE EXTENSION IF NOT EXISTS pgcrypto;` já está no início do arquivo `clinica.sql`. Portanto, ao executar o arquivo completo, não é necessário instalá-la separadamente. Se estiver executando apenas os inserts manualmente no pgAdmin, crie a extensão primeiro.
 
-### 5. Configurar as variáveis de ambiente
+### 5. Configuração do ambiente (.env)
 
-Copie o arquivo `.env.example` para `.env`.
-
-No PowerShell do Windows:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Edite o novo arquivo para preencher os valores do seu ambiente:
+Por ser um projeto **acadêmico**, o repositório já contém um arquivo `.env` de demonstração. Não é necessário criá-lo manualmente para o ambiente padrão da atividade.
 
 ```dotenv
 PORT=3001
-DATABASE_URL=postgres://postgres:SUA_SENHA@localhost:5432/clinica
-SESSION_SECRET=SUBSTITUA_POR_UM_SEGREDO_COM_PELO_MENOS_32_CARACTERES
+DATABASE_URL=postgres://postgres:admin@localhost:5432/clinica
+SESSION_SECRET=SESISENAI
 CPF_ENCRYPTION_KEY=9749886e57235857555b0653771e9a78d461e3904bf8fd08d67b2d22f465d95d
 NODE_ENV=development
 ```
 
-**Chave de CPF dos dados fictícios:** o arquivo `.env.example` já contém uma chave didática, utilizada para cifrar os CPFs de teste incluídos no `clinica.sql`. Copie-a sem modificar se quiser abrir os registros de exemplo.
+- **PORT:** porta HTTP do sistema.
+- **DATABASE_URL:** conexão PostgreSQL local, usuário `postgres`, senha acadêmica `admin`, banco `clinica`.
+- **SESSION_SECRET:** assinatura das sessões; para a atividade, utiliza `SESISENAI`. É um segredo curto, aceito somente no modo `development`.
+- **CPF_ENCRYPTION_KEY:** chave exclusivamente didática correspondente aos CPFs fictícios já criptografados em `clinica.sql`.
+- **NODE_ENV:** `development` indica ambiente de desenvolvimento.
 
-**Atenção:** essa chave é pública e serve **somente para testes com dados fictícios**. Para cadastrar dados pessoais reais, gere outra chave segura, remova os dados fictícios e recrie o banco ou realize uma migração controlada de criptografia. Nunca publique uma chave de produção no GitHub.
+Se a senha do seu PostgreSQL local for diferente de `admin`, altere a URL de conexão no `.env` local. Se houver caracteres especiais na senha, codifique-os corretamente na URL.
 
-Para gerar sua própria chave:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-**Importante:** não altere ou perca a chave de CPF depois de cadastrar dados: sem a chave correta, os CPFs existentes não poderão ser descriptografados.
-
-Se a senha PostgreSQL tiver caracteres especiais, codifique-os corretamente na URL de conexão.
+**Importante:** o arquivo `.env` foi publicado **intencionalmente apenas para uso acadêmico com dados fictícios**. Não utilize esse segredo, a senha do banco ou a chave de CPF em produção. Em aplicações reais, utilize segredos privados com alta entropia, não versionados no Git, e configure um armazenamento persistente de sessões. A aplicação rejeita `SESSION_SECRET` com menos de 32 caracteres quando `NODE_ENV=production`.
 
 ### 6. Dados de exemplo já incluídos no SQL
 
@@ -252,7 +241,7 @@ O arquivo **`clinica.sql` cria e popula todas as quatro tabelas**:
 | `pets` | 3 |
 | `agendamentos` | 3 |
 
-Os CPFs fictícios dos tutores foram previamente criptografados em AES-256-GCM e estão inseridos no SQL em formato cifrado, compatível com a chave didática do `.env.example`.
+Os CPFs fictícios dos tutores foram previamente criptografados em AES-256-GCM e estão inseridos no SQL em formato cifrado, compatível com a chave didática do `.env`.
 
 ### 7. Iniciar a aplicação
 
@@ -400,7 +389,7 @@ O arquivo `lib/cpf.js` utiliza criptografia autenticada **AES-256-GCM**, com cha
 - A aplicação criptografa os 11 dígitos antes de novos cadastros; os exemplos do SQL já estão criptografados.
 - O banco recebe os dados cifrados, não o CPF em texto puro.
 - A listagem administrativa descriptografa os CPFs para exibição aos usuários autenticados.
-- Em produção, a chave deve ser armazenada de forma protegida e não pode ser enviada ao repositório. A chave didática do `.env.example` é pública e deve ser usada apenas para dados fictícios.
+- Em produção, a chave deve ser armazenada de forma protegida e não pode ser enviada ao repositório. A chave didática do `.env` é pública e deve ser usada apenas para dados fictícios.
 
 **Observação sobre LGPD:** criptografar o CPF é um controle importante, mas não basta, por si só, para garantir conformidade com toda a LGPD.
 

@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express=require('express'),session=require('express-session'),bcrypt=require('bcryptjs'),crypto=require('node:crypto'),db=require('./db'),app=express();
-if(!process.env.SESSION_SECRET||process.env.SESSION_SECRET.length<32)throw Error('Configure SESSION_SECRET com 32+ caracteres');
+if (!process.env.SESSION_SECRET) throw Error('Configure SESSION_SECRET no .env');
+if (process.env.NODE_ENV === 'production' && process.env.SESSION_SECRET.length < 32)
+  throw Error('Em produção, SESSION_SECRET deve ter 32+ caracteres');
 app.set('view engine','ejs');app.use(express.static('Public'));app.use(express.urlencoded({extended:false}));
 app.use(session({name:'clinica.sid',secret:process.env.SESSION_SECRET,resave:false,saveUninitialized:false,cookie:{httpOnly:true,sameSite:'lax',secure:process.env.NODE_ENV==='production',maxAge:30*60*1000}}));
 app.use((req,res,next)=>{if(!req.session.csrf)req.session.csrf=crypto.randomBytes(24).toString('hex');res.locals.csrf=req.session.csrf;res.locals.usuario=req.session.usuario||null;
