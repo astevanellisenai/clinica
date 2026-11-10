@@ -1,0 +1,92 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Length 388 >>
+stream
+BT /F1 16 Tf 50 780 Td (CAPA — CLINICA VETERINARIA) Tj ET
+BT /F1 10 Tf 50 735 Td (Caderno de prova pratica — Sistema de Avaliacao da Educacao Profissional) Tj ET
+BT /F1 10 Tf 50 705 Td (Curso: Tecnico em Desenvolvimento de Sistemas) Tj ET
+BT /F1 10 Tf 50 675 Td (Projeto: Clinica Veterinaria) Tj ET
+BT /F1 10 Tf 50 645 Td (Especificacao de sistema conforme avaliacao pratica SENAI) Tj ET
+endstream
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 3 0 R >>
+endobj
+5 0 obj
+<< /Length 465 >>
+stream
+BT /F1 16 Tf 50 780 Td (ORIENTACOES GERAIS) Tj ET
+BT /F1 10 Tf 50 735 Td (Desligue e guarde o telefone celular.) Tj ET
+BT /F1 10 Tf 50 705 Td (Nao e permitido utilizar internet durante a prova.) Tj ET
+BT /F1 10 Tf 50 675 Td (Ambientacao inicial de 30 minutos para leitura e reconhecimento.) Tj ET
+BT /F1 10 Tf 50 645 Td (Tempo de realizacao: 3 horas apos a ambientacao.) Tj ET
+BT /F1 10 Tf 50 615 Td (Ao final, devolva o caderno e os materiais ao avaliador.) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 823 >>
+stream
+BT /F1 16 Tf 50 780 Td (CONTEXTUALIZACAO E REGRAS) Tj ET
+BT /F1 10 Tf 50 735 Td (Uma clinica veterinaria necessita informatizar tutores, pets e agendamentos.) Tj ET
+BT /F1 10 Tf 50 705 Td (Login deve validar falhas e ter expiracao de sessao.) Tj ET
+BT /F1 10 Tf 50 675 Td (CPF dos tutores deve ser armazenado criptografado.) Tj ET
+BT /F1 10 Tf 50 645 Td (Tela principal: nome do usuario, navegacao e logout.) Tj ET
+BT /F1 10 Tf 50 615 Td (Tutor: pesquisa, listagem filtrada e edicao.) Tj ET
+BT /F1 10 Tf 50 585 Td (Pet: cadastrar associando obrigatoriamente ao tutor.) Tj ET
+BT /F1 10 Tf 50 555 Td (Agendamento: listagem por mes com dados do pet e tutor.) Tj ET
+BT /F1 10 Tf 50 525 Td (Deve ser possivel alterar a data do agendamento.) Tj ET
+BT /F1 10 Tf 50 495 Td (Banco: no minimo tres registros para cada tabela.) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 665 >>
+stream
+BT /F1 16 Tf 50 780 Td (RESULTADOS E ENTREGAS ESPERADAS) Tj ET
+BT /F1 10 Tf 50 735 Td (1. Documentacao de software \(requisitos funcionais\).) Tj ET
+BT /F1 10 Tf 50 705 Td (2. Diagrama entidade-relacionamento \(DER\).) Tj ET
+BT /F1 10 Tf 50 675 Td (3. Script PostgreSQL: clinica.sql.) Tj ET
+BT /F1 10 Tf 50 645 Td (4. Codigo-fonte do login.) Tj ET
+BT /F1 10 Tf 50 615 Td (5. Codigo-fonte da tela principal.) Tj ET
+BT /F1 10 Tf 50 585 Td (6. Gerenciamento de tutores.) Tj ET
+BT /F1 10 Tf 50 555 Td (7. Gerenciamento de pets.) Tj ET
+BT /F1 10 Tf 50 525 Td (8. Gerenciamento de agendamentos.) Tj ET
+BT /F1 10 Tf 50 495 Td (Veja o projeto completo no README.md.) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+xref
+0 12
+0000000000 65535 f 
+0000000009 00000 n 
+0000000079 00000 n 
+0000000155 00000 n 
+0000000593 00000 n 
+0000000719 00000 n 
+0000001234 00000 n 
+0000001360 00000 n 
+0000002233 00000 n 
+0000002359 00000 n 
+0000003074 00000 n 
+0000003201 00000 n 
+trailer
+<< /Size 12 /Root 11 0 R >>
+startxref
+3251
+%%EOF
