@@ -6,7 +6,6 @@ node_modules/
 # Em qualquer ambiente real, remover a exceção abaixo e nunca versionar .env.
 .env.*
 !.env
-!.env.example
 
 # Logs
 *.log

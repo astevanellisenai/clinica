@@ -124,7 +124,6 @@ clinica/
 ├── clinica.sql                   # Estrutura + dados de todas as tabelas
 ├── package.json
 ├── .env                         # Configuração didática pronta
-├── .env.example
 ├── .gitignore
 └── README.md
 ```
@@ -253,7 +252,7 @@ Os CPFs fictícios dos tutores foram previamente criptografados em AES-256-GCM e
 
 Se você já executou `clinica.sql` anteriormente e possui dados que deseja preservar, **não execute novamente o script completo**, pois ele contém `DROP TABLE`.
 
-Execute a migração [migrations/001_foto_pets.sql](migrations/001_foto_pets.sql) no pgAdmin, conectado ao banco `clinica`. O conteúdo é:
+No pgAdmin, conectado ao banco `clinica`, execute apenas o comando abaixo se a coluna `imagem_url` ainda não existir:
 
 ```sql
 ALTER TABLE pets ADD COLUMN IF NOT EXISTS imagem_url VARCHAR(255);
@@ -489,7 +488,7 @@ A apresentação visual usa como referência o projeto Eventos:
 - Logo em `Public/img/landing/logo.svg`; ilustração em `Public/img/landing/hero.svg`.
 - O formulário de pets aceita fotografia opcional de até 3 MB (JPG, PNG, WebP), com prévia antes de salvar.
 
-**Atenção:** atualizar o repositório não altera o banco PostgreSQL automaticamente. Quem já tem o banco `clinica` deve executar apenas `migrations/001_foto_pets.sql` para adicionar a coluna de foto sem apagar registros.
+**Atenção:** atualizar o código pelo Git não modifica o PostgreSQL. Para um banco novo, execute apenas `clinica.sql`, que contém todas as tabelas e os registros de exemplo. Se já tiver dados, use somente o `ALTER TABLE` mostrado acima para preservar os registros.
 
 
 ## CRUD de usuários e interface administrativa
