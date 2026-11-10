@@ -22,5 +22,14 @@ Thumbs.db
 
 # Fotos de pets enviadas no uso local (não versionar dados dos alunos)
 public/img/pets/*
+
+# Apenas as imagens de demonstração devem ser versionadas
 !public/img/pets/.gitkeep
 !public/img/pets/sem-foto.svg
+!public/img/pets/mel.jpg
+!public/img/pets/luna.jpg
+!public/img/pets/thor.jpg
+!public/img/pets/pipoca.jpg
+!public/img/pets/nino.jpg
+!public/img/pets/nemo.jpg
+!public/img/pets/kiwi.jpg
