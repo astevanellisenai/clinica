@@ -52,7 +52,7 @@ O sistema possui uma **área administrativa protegida por login**, na qual usuá
 - Quatro tabelas relacionadas: `usuarios`, `tutores`, `pets` e `agendamentos`.
 - Chaves primárias, chaves estrangeiras, campos obrigatórios e restrições.
 - Três usuários de exemplo criados pelo SQL.
-- Três tutores, três pets e três agendamentos inseridos diretamente pelo `clinica.sql` (sem `seed.js`).
+- Três tutores, três pets e três agendamentos inseridos diretamente pelo `clinica.sql`.
 - Senhas de usuários armazenadas com hash bcrypt.
 
 ---
@@ -189,7 +189,23 @@ psql -U postgres -d clinica -f clinica.sql
 
 **Atenção:** o arquivo `clinica.sql` utiliza `DROP TABLE` e **apaga tabelas existentes** antes de recriá-las. Execute apenas em um banco de testes, sem informações que precisem ser preservadas.
 
-A extensão `pgcrypto` é utilizada para gerar o hash das senhas iniciais de demonstração.
+### Extensão pgcrypto
+
+O PostgreSQL utiliza a extensão `pgcrypto` para disponibilizar as funções `crypt()` e `gen_salt()`, necessárias para gerar os hashes das senhas iniciais.
+
+Antes de executar os comandos `INSERT INTO usuarios` separadamente no pgAdmin, execute no banco `clinica`:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+```
+
+Para verificar a instalação:
+
+```sql
+SELECT crypt('Clinica@123', gen_salt('bf'));
+```
+
+**Observação:** o comando `CREATE EXTENSION IF NOT EXISTS pgcrypto;` já está no início do arquivo `clinica.sql`. Portanto, ao executar o arquivo completo, não é necessário instalá-la separadamente. Se estiver executando apenas os inserts manualmente no pgAdmin, crie a extensão primeiro.
 
 ### 5. Configurar as variáveis de ambiente
 
@@ -226,8 +242,6 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 Se a senha PostgreSQL tiver caracteres especiais, codifique-os corretamente na URL de conexão.
 
 ### 6. Dados de exemplo já incluídos no SQL
-
-Não é necessário executar `npm run seed` nem nenhum script JavaScript para popular o banco.
 
 O arquivo **`clinica.sql` cria e popula todas as quatro tabelas**:
 
