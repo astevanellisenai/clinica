@@ -1,1 +1,40 @@
-<%-include('includes/header')%><div class="login-card card"><img class="login-logo" src="/img/landing/logo.svg" alt="Clínica Vet"><h1>Área administrativa</h1><p>Informe seus dados para acessar o sistema.</p><%if(erro){%><p class="erro"><%=erro%></p><%}%><form method="post" action="/login"><input type="hidden" name="_csrf" value="<%=csrf%>"><div class="campo-formulario"><label for="email">E-mail</label><input id="email" type="text" required name="email" autocomplete="username"></div><div class="campo-formulario"><label for="senha">Senha</label><input id="senha" type="password" required name="senha" autocomplete="current-password"></div><button class="btn" type="submit">Entrar</button> <a href="/">Voltar à página inicial</a></form></div><%-include('includes/footer')%>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar | Clínica Vet</title>
+  <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body class="login-screen">
+  <div class="login-layout">
+    <section class="login-visual" aria-label="Bem-vindo à Clínica Vet">
+      <a href="/" class="login-brand">🐾 Clínica <strong>Vet</strong></a>
+      <div class="login-visual-copy">
+        <span class="eyebrow">BEM-VINDO À CLÍNICA VET</span>
+        <h2>Cuidando de quem faz parte da família.</h2>
+        <p>Gestão de tutores, pets e atendimentos em um só lugar.</p>
+        <img src="/img/landing/hero.jpg" alt="Cachorro e gato na clínica veterinária">
+      </div>
+      <small>Projeto didático SENAI</small>
+    </section>
+    <main class="login-main">
+      <div class="login-card card">
+        <a href="/" class="login-home-link">← Voltar para o início</a>
+        <div class="login-heading"><span class="login-heading-icon">🐾</span>
+          <h1>Área administrativa</h1>
+          <p>Entre com seu usuário e sua senha para continuar.</p>
+        </div>
+        <% if (erro) { %><p class="erro" role="alert"><%= erro %></p><% } %>
+        <form method="post" action="/login">
+          <input type="hidden" name="_csrf" value="<%= csrf %>">
+          <div class="campo-formulario"><label for="email">E-mail de acesso</label><input type="text" id="email" name="email" autocomplete="username" placeholder="admin@clinica" required autofocus></div>
+          <div class="campo-formulario"><label for="senha">Senha</label><input type="password" id="senha" name="senha" autocomplete="current-password" placeholder="Digite sua senha" required></div>
+          <button class="btn login-submit" type="submit">Entrar no sistema →</button>
+        </form>
+        <p class="login-info">Acesso restrito aos usuários cadastrados.</p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
