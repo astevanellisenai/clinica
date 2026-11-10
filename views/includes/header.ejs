@@ -1,1 +1,10 @@
-<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Clínica Veterinária</title><link rel="stylesheet" href="/css/estilos.css"></head><body><header><strong>🐾 Clínica Veterinária</strong><nav><%if(usuario){%><a href="/dashboard">Início</a><a href="/tutores">Tutores</a><a href="/pets">Pets</a><a href="/agendamentos">Agendamentos</a><span>Olá, <%=usuario.nome%></span><form style="display:inline" method="post" action="/logout"><input type="hidden" name="_csrf" value="<%=csrf%>"><button>Sair</button></form><%}%></nav></header><main>
+<!DOCTYPE html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Clínica Vet</title><link rel="stylesheet" href="/css/estilos.css"></head>
+<body><header class="admin-cabecalho"><div class="admin-container">
+<div class="admin-cabecalho-superior">
+<a href="/dashboard" class="admin-logo"><img src="/img/landing/logo.svg" alt="Clínica Vet"><span>Clínica Veterinária</span></a>
+<div class="usuario-acoes"><% if(usuario){ %><span>Olá, <strong><%=usuario.nome%></strong>!</span><form method="post" action="/logout"><input type="hidden" name="_csrf" value="<%=csrf%>"><button class="btn-sair" type="submit">Sair</button></form><% } else { %><a href="/login" class="btn-sair">Entrar</a><% } %></div>
+</div>
+<% if(usuario){ %><div class="admin-cabecalho-inferior"><nav class="admin-menu" aria-label="Navegação administrativa">
+<a href="/dashboard">Dashboard</a><a href="/tutores">Tutores</a><a href="/pets">Pets</a><a href="/agendamentos">Agendamentos</a>
+</nav></div><% } %>
+</div></header><main class="conteudo">

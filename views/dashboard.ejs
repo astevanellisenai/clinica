@@ -1,1 +1,10 @@
-<%-include('includes/header')%><h1>Painel principal</h1><p>Usuário logado: <strong><%=usuario.nome%></strong></p><div class="card"><h2>Cadastros</h2><p><a href="/tutores">Tutores: <%=quantidades[0]%></a></p><p><a href="/pets">Pets: <%=quantidades[1]%></a></p><p><a href="/agendamentos">Agendamentos: <%=quantidades[2]%></a></p></div><%-include('includes/footer')%>
+<%-include('includes/header')%>
+<div class="page-title"><div><span class="eyebrow">Visão geral</span><h1>Dashboard</h1><p>Bem-vindo(a), <strong><%=usuario.nome%></strong>. Acompanhe os principais dados da clínica.</p></div></div>
+<div class="cards-3 kpis">
+<article class="card"><span class="kpi-icon">👥</span><p>Tutores cadastrados</p><strong><%=quantidades[0]%></strong><a href="/tutores">Ver tutores →</a></article>
+<article class="card"><span class="kpi-icon">🐾</span><p>Pets cadastrados</p><strong><%=quantidades[1]%></strong><a href="/pets">Ver pets →</a></article>
+<article class="card"><span class="kpi-icon">📅</span><p>Total de agendamentos</p><strong><%=quantidades[2]%></strong><a href="/agendamentos">Ver agenda →</a></article></div>
+<div class="dashboard-grid"><section class="card"><div class="section-inline"><h2>Próximos agendamentos</h2><a href="/agendamentos">Ver todos</a></div>
+<%if(proximos.length===0){%><p>Nenhum agendamento futuro.</p><%} else {%><div class="table"><table><thead><tr><th>Pet</th><th>Tutor</th><th>Data e hora</th><th>Motivo</th></tr></thead><tbody><%proximos.forEach(a=>{%><tr><td><span class="pet-ident"><img src="<%=a.imagem_url?'/img/pets/'+a.imagem_url:'/img/pets/sem-foto.svg'%>" alt=""><%=a.pet_nome%></span></td><td><%=a.tutor_nome%></td><td><%=new Date(a.data_agendamento).toLocaleString('pt-BR')%></td><td><%=a.descricao%></td></tr><%})%></tbody></table></div><%}%></section>
+<aside class="card"><h2>Resumo dos atendimentos</h2><%if(status.length===0){%><p>Sem registros.</p><%}else{%><%status.forEach(s=>{%><div class="resumo-linha"><span><%=s.status%></span><strong><%=s.total%></strong></div><%})%><%}%><div class="atalhos"><a class="btn" href="/agendamentos/novo">Novo agendamento</a><a class="btn btn-secundario" href="/pets/novo">Cadastrar pet</a></div></aside></div>
+<%-include('includes/footer')%>

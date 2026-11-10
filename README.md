@@ -4,7 +4,7 @@ Sistema web para gerenciamento de **tutores, pets e agendamentos veterinários**
 
 Este projeto foi criado para atividades práticas do curso **Técnico em Desenvolvimento de Sistemas — SENAI**. A estrutura e a organização das rotas e interfaces seguem o padrão do projeto [🎫 Conecta Eventos](https://github.com/astevanellisenai/eventos), adaptado ao cenário de uma clínica veterinária.
 
-O sistema possui uma **área administrativa protegida por login**, na qual usuários autorizados podem consultar, cadastrar e atualizar dados de tutores, seus animais e respectivos agendamentos.
+O sistema conta com uma **landing page pública**, identidade visual com logo próprio e uma **área administrativa protegida por login**, na qual usuários autorizados podem consultar, cadastrar e atualizar dados de tutores, seus animais e respectivos agendamentos.
 
 ---
 
@@ -24,7 +24,7 @@ O sistema possui uma **área administrativa protegida por login**, na qual usuá
 ### 🏠 Painel principal
 - Identificação do usuário logado pelo nome.
 - Menu para navegação entre os módulos.
-- Quantidade total de tutores, pets e agendamentos.
+- Quantidade total de tutores, pets e agendamentos, próximos atendimentos e resumo por situação.
 - Botão para sair do sistema.
 
 ### 👥 Gerenciamento de tutores
@@ -35,10 +35,10 @@ O sistema possui uma **área administrativa protegida por login**, na qual usuá
 - **CPF criptografado antes de ser salvo no PostgreSQL**, usando AES-256-GCM.
 
 ### 🐶 Gerenciamento de pets
-- Cadastro de pets com nome, espécie e raça.
+- Cadastro de pets com nome, espécie, raça e fotografia (JPG, PNG ou WebP, até 3 MB).
 - Associação obrigatória do pet a um tutor.
-- Listagem mostrando o nome do tutor responsável.
-- Edição do pet e de seu vínculo com o tutor.
+- Listagem com foto do animal e nome do tutor responsável.
+- Edição do pet, sua fotografia e seu vínculo com o tutor.
 
 ### 📅 Gerenciamento de agendamentos
 - Cadastro de consultas/agendamentos de pets.
@@ -71,6 +71,7 @@ O sistema possui uma **área administrativa protegida por login**, na qual usuá
 | **crypto (Node.js)** | Criptografia autenticada dos CPFs |
 | **dotenv** | Configurações locais via variáveis de ambiente |
 | **Nodemon** | Reinício automático em desenvolvimento |
+| **multer** | Upload das fotos dos pets |
 | **HTML e CSS** | Interfaces dos formulários e listagens |
 
 ---
@@ -81,8 +82,11 @@ O sistema possui uma **área administrativa protegida por login**, na qual usuá
 clinica/
 │
 ├── Public/
-│   └── css/
-│       └── estilos.css
+│   ├── css/
+│   │   └── estilos.css
+│   └── img/
+│       ├── landing/             # Logo e ilustração da página pública
+│       └── pets/                # Fotos enviadas pelos usuários
 │
 ├── Routes/
 │   ├── tutoresRoutes.js
@@ -102,6 +106,8 @@ clinica/
 │   ├── pets/
 │   │   ├── index.ejs
 │   │   └── form.ejs
+│   ├── landing/
+│   │   └── index.ejs
 │   ├── agendamentos/
 │   │   ├── index.ejs
 │   │   └── form.ejs
@@ -243,6 +249,24 @@ O arquivo **`clinica.sql` cria e popula todas as quatro tabelas**:
 
 Os CPFs fictícios dos tutores foram previamente criptografados em AES-256-GCM e estão inseridos no SQL em formato cifrado, compatível com a chave didática do `.env`.
 
+### Atualização de um banco de dados já existente
+
+Se você já executou `clinica.sql` anteriormente e possui dados que deseja preservar, **não execute novamente o script completo**, pois ele contém `DROP TABLE`.
+
+Execute apenas esta migração no pgAdmin, conectado ao banco `clinica`:
+
+```sql
+ALTER TABLE pets ADD COLUMN IF NOT EXISTS imagem_url VARCHAR(255);
+```
+
+Instale a nova dependência de upload:
+
+```bash
+npm install
+```
+
+As fotos enviadas são armazenadas em `Public/img/pets/` e seus nomes são registrados em `pets.imagem_url`. O formulário permite imagem opcional JPG, PNG ou WebP de até 3 MB; imagens antigas são mantidas quando nenhum novo arquivo é selecionado.
+
 ### 7. Iniciar a aplicação
 
 ```bash
@@ -251,7 +275,7 @@ npm start
 
 Acesse:
 
-**http://localhost:3001/login**
+**http://localhost:3001/** — landing page pública. Após login, o sistema abre **http://localhost:3001/dashboard**.
 
 O comando `npm start` executa `node app.js`. Durante o desenvolvimento, utilize `npm run dev` para iniciar com Nodemon.
 
@@ -275,7 +299,7 @@ Essas credenciais são **exclusivamente didáticas**. Não devem ser mantidas em
 
 | Método | Rota | Descrição | Exige login |
 |---|---|---|---|
-| GET | `/` | Redireciona para login ou painel | Não |
+| GET | `/` | Landing page pública; se autenticado, abre o dashboard | Não |
 | GET | `/login` | Exibe a página de login | Não |
 | POST | `/login` | Valida e autentica o usuário | Não |
 | POST | `/logout` | Encerra a sessão | Sim |
@@ -333,6 +357,7 @@ Armazena os animais e seu tutor.
 | `nome` | VARCHAR(100) | Nome do animal |
 | `especie` | VARCHAR(70) | Espécie |
 | `raca` | VARCHAR(100) | Raça |
+| `imagem_url` | VARCHAR(255) | Nome da foto armazenada em `Public/img/pets` |
 | `tutor_id` | INTEGER | Chave estrangeira para `tutores.id` |
 
 ### Tabela `agendamentos`
