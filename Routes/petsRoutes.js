@@ -5,9 +5,17 @@ const apagar=async nome=>{
  const file=path.join(__dirname,'..','Public','img','pets',path.basename(nome));
  try{await fs.unlink(file)}catch(e){if(e.code!=='ENOENT')console.warn('Falha ao apagar imagem antiga',e)}
 };
+const {parametros,consultar}=require('../lib/listagem');
 r.get('/',async(req,res,next)=>{
- try{const {rows}=await db.query('SELECT p.*,t.nome tutor_nome FROM pets p JOIN tutores t ON p.tutor_id=t.id ORDER BY p.nome');
- res.render('pets/index',{registros:rows})}catch(e){next(e)}
+ try{
+ const ordens={nome:'p.nome ASC,p.id ASC',nome_desc:'p.nome DESC,p.id DESC',especie:'p.especie ASC,p.nome ASC',tutor:'t.nome ASC,p.nome ASC',id_desc:'p.id DESC'};
+ const q=parametros(req.query,ordens,'nome');
+ const filtro=['Cachorro','Gato','Outros'].includes(q.filtro)?q.filtro:'';
+ const values=['%'+q.busca+'%'];let where='(p.nome ILIKE $1 OR p.especie ILIKE $1 OR COALESCE(p.raca,\'\') ILIKE $1 OR t.nome ILIKE $1)';
+ if(filtro){values.push(filtro);where+=filtro==='Outros'?" AND p.especie NOT IN ('Cachorro','Gato')":' AND p.especie = $2';}
+ const resultado=await consultar(db,{from:'pets p JOIN tutores t ON p.tutor_id=t.id',where,values,select:'p.*,t.nome AS tutor_nome',order:ordens[q.ordem],pagina:q.pagina});
+ res.render('pets/index',{...resultado,...q,filtro,pagina:resultado.pagina});
+ }catch(e){next(e)}
 });
 async function formulario(req,res,next,registro={},titulo='Novo pet',acao='/pets/novo'){
  try{const {rows}=await db.query('SELECT id,nome FROM tutores ORDER BY nome');

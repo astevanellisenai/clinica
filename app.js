@@ -23,14 +23,17 @@ app.post('/login',async(req,res,next)=>{try{const {rows}=await db.query('SELECT 
 app.post('/logout',login,(req,res,next)=>req.session.destroy(e=>e?next(e):res.redirect('/login')));
 app.get('/dashboard',login,async(req,res,next)=>{
  try {
-   const [tutores,pets,agendamentos,proximos,status]=await Promise.all([
+   const [tutores,pets,agendamentos,proximos,status,usuarios,especies,mensal]=await Promise.all([
      db.query('SELECT COUNT(*)::int total FROM tutores'),
      db.query('SELECT COUNT(*)::int total FROM pets'),
      db.query('SELECT COUNT(*)::int total FROM agendamentos'),
      db.query("SELECT a.id,a.data_agendamento,a.descricao,a.status,p.nome AS pet_nome,p.imagem_url,t.nome AS tutor_nome FROM agendamentos a JOIN pets p ON a.pet_id=p.id JOIN tutores t ON p.tutor_id=t.id WHERE a.data_agendamento >= CURRENT_TIMESTAMP AND a.status='agendado' ORDER BY a.data_agendamento LIMIT 5"),
-     db.query('SELECT status,COUNT(*)::int total FROM agendamentos GROUP BY status')
+     db.query('SELECT status,COUNT(*)::int total FROM agendamentos GROUP BY status'),
+     db.query('SELECT COUNT(*)::int total FROM usuarios'),
+     db.query('SELECT especie,COUNT(*)::int total FROM pets GROUP BY especie ORDER BY total DESC,especie'),
+     db.query("SELECT to_char(mes,'YYYY-MM') AS mes, COUNT(a.id)::int AS total FROM generate_series(date_trunc('month',CURRENT_DATE)-INTERVAL '5 months', date_trunc('month',CURRENT_DATE), INTERVAL '1 month') mes LEFT JOIN agendamentos a ON a.data_agendamento >= mes AND a.data_agendamento < mes+INTERVAL '1 month' GROUP BY mes ORDER BY mes")
    ]);
-   res.render('dashboard',{quantidades:[tutores.rows[0].total,pets.rows[0].total,agendamentos.rows[0].total],proximos:proximos.rows,status:status.rows});
+   res.render('dashboard',{quantidades:[tutores.rows[0].total,pets.rows[0].total,agendamentos.rows[0].total],proximos:proximos.rows,status:status.rows,totalUsuarios:usuarios.rows[0].total,especies:especies.rows,mensal:mensal.rows});
  }catch(e){next(e)}
 });
 for(const nome of ['tutores','pets','agendamentos','usuarios'])app.use('/'+nome,login,require('./Routes/'+nome+'Routes'));

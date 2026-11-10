@@ -1,5 +1,11 @@
 const r=require('express').Router(),db=require('../db'),{cifrar,decifrar}=require('../lib/cpf');
-r.get('/',async(req,res,next)=>{try{const busca=String(req.query.busca||'').trim();const {rows}=await db.query("SELECT * FROM tutores WHERE nome ILIKE $1 OR email ILIKE $1 ORDER BY nome",['%'+busca+'%']);res.render('tutores/index',{registros:rows.map(x=>({...x,cpf:decifrar(x.cpf_criptografado)})),busca})}catch(e){next(e)}});
+const {parametros,consultar}=require('../lib/listagem');
+r.get('/',async(req,res,next)=>{try{
+ const ordens={nome:'nome ASC, id ASC',nome_desc:'nome DESC, id DESC',id:'id ASC',id_desc:'id DESC',email:'email ASC, id ASC'};
+ const q=parametros(req.query,ordens,'nome');
+ const resultado=await consultar(db,{from:'tutores',where:'(nome ILIKE $1 OR email ILIKE $1 OR COALESCE(telefone,\'\') ILIKE $1)',values:['%'+q.busca+'%'],order:ordens[q.ordem],pagina:q.pagina});
+ res.render('tutores/index',{...resultado,registros:resultado.registros.map(x=>({...x,cpf:decifrar(x.cpf_criptografado)})),...q,pagina:resultado.pagina});
+}catch(e){next(e)}});
 r.get('/novo',(req,res)=>res.render('tutores/form',{registro:{},titulo:'Novo tutor',acao:'/tutores/novo'}));
 r.post('/novo',async(req,res,next)=>{try{const {nome,email,telefone,cpf}=req.body;await db.query('INSERT INTO tutores(nome,email,telefone,cpf_criptografado) VALUES($1,$2,$3,$4)',[nome,email,telefone,cifrar(cpf)]);res.redirect('/tutores')}catch(e){next(e)}});
 r.get('/editar/:id',async(req,res,next)=>{try{const {rows}=await db.query('SELECT * FROM tutores WHERE id=$1',[req.params.id]);if(!rows.length)return res.sendStatus(404);res.render('tutores/form',{registro:{...rows[0],cpf:decifrar(rows[0].cpf_criptografado)},titulo:'Editar tutor',acao:'/tutores/editar/'+req.params.id})}catch(e){next(e)}});
