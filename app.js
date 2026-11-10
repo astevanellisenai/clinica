@@ -21,13 +21,6 @@ if (!process.env.SESSION_SECRET) {
     throw new Error('Configure SESSION_SECRET no .env');
 }
 
-if (
-    process.env.NODE_ENV === 'production' &&
-    process.env.SESSION_SECRET.length < 32
-) {
-    throw new Error('Em produção, SESSION_SECRET deve ter 32+ caracteres');
-}
-
 // 2. CONFIGURAÇÃO DO EXPRESS E DO MOTOR DE VIEWS
 // O EJS transforma arquivos .ejs em páginas HTML.
 app.set('view engine', 'ejs');
@@ -50,7 +43,7 @@ app.use(session({
     cookie: {
         httpOnly: true,
         sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        secure: false, // Aulas locais com HTTP (localhost).
         maxAge: 30 * 60 * 1000
     }
 }));
@@ -213,24 +206,24 @@ app.use('/agendamentos', exigirLogin, agendamentosRoutes);
 const usuariosRoutes = require('./Routes/usuariosRoutes');
 app.use('/usuarios', exigirLogin, usuariosRoutes);
 
-// 12. TRATAMENTO CENTRALIZADO DE ERROS
-// Em desenvolvimento exibe a mensagem e o stack trace na tela.
-// Em produção, oculta detalhes internos para não expor credenciais,
-// caminhos do servidor ou informações do banco de dados.
+// 12. TRATAMENTO DE ERROS
+// Em nosso projeto local, o aluno vê o erro real na página e no terminal.
+// Nunca use esta exibição detalhada em um site público.
 app.use((erro, req, res, next) => {
     const status = erro.status || erro.statusCode || 500;
-    const desenvolvimento = process.env.NODE_ENV !== 'production';
 
-    console.error(`[${req.method} ${req.originalUrl}] Erro ${status}:`, erro);
+    // Mostra o erro completo no terminal do VS Code/PowerShell.
+    console.error('Erro na rota ' + req.originalUrl, erro);
 
     if (res.headersSent) {
         return next(erro);
     }
 
+    // Exibe a mensagem e a localização do erro no navegador.
     res.status(status).render('erro', {
-        status,
-        mensagem: desenvolvimento ? erro.message : 'Não foi possível concluir a operação.',
-        detalhes: desenvolvimento ? erro.stack : null
+        status: status,
+        mensagem: erro.message,
+        detalhes: erro.stack
     });
 });
 

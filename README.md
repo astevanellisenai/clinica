@@ -222,18 +222,17 @@ PORT=3001
 DATABASE_URL=postgres://postgres:admin@localhost:5432/clinica
 SESSION_SECRET=SESISENAI
 CPF_ENCRYPTION_KEY=9749886e57235857555b0653771e9a78d461e3904bf8fd08d67b2d22f465d95d
-NODE_ENV=development
+
 ```
 
 - **PORT:** porta HTTP do sistema.
 - **DATABASE_URL:** conexão PostgreSQL local, usuário `postgres`, senha acadêmica `admin`, banco `clinica`.
 - **SESSION_SECRET:** assinatura das sessões; para a atividade, utiliza `SESISENAI`. É um segredo curto, aceito somente no modo `development`.
 - **CPF_ENCRYPTION_KEY:** chave exclusivamente didática correspondente aos CPFs fictícios já criptografados em `clinica.sql`.
-- **NODE_ENV:** `development` indica ambiente de desenvolvimento.
 
 Se a senha do seu PostgreSQL local for diferente de `admin`, altere a URL de conexão no `.env` local. Se houver caracteres especiais na senha, codifique-os corretamente na URL.
 
-**Importante:** o arquivo `.env` foi publicado **intencionalmente apenas para uso acadêmico com dados fictícios**. Não utilize esse segredo, a senha do banco ou a chave de CPF em produção. Em aplicações reais, utilize segredos privados com alta entropia, não versionados no Git, e configure um armazenamento persistente de sessões. A aplicação rejeita `SESSION_SECRET` com menos de 32 caracteres quando `NODE_ENV=production`.
+**Importante:** o arquivo `.env` foi publicado **intencionalmente apenas para uso acadêmico com dados fictícios**. Não utilize esse segredo, a senha do banco ou a chave de CPF em produção. Em aplicações reais, utilize segredos privados com alta entropia, não versionados no Git, e configure um armazenamento persistente de sessões. Este projeto foi preparado somente para execução local, em ambiente didático.
 
 ### 6. Dados de exemplo já incluídos no SQL
 
