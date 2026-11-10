@@ -203,7 +203,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 Para verificar a instalação:
 
 ```sql
-SELECT crypt('Clinica@123', gen_salt('bf'));
+SELECT crypt('1234', gen_salt('bf'));
 ```
 
 **Observação:** o comando `CREATE EXTENSION IF NOT EXISTS pgcrypto;` já está no início do arquivo `clinica.sql`. Portanto, ao executar o arquivo completo, não é necessário instalá-la separadamente. Se estiver executando apenas os inserts manualmente no pgAdmin, crie a extensão primeiro.
@@ -263,9 +263,9 @@ O script `clinica.sql` cria estes usuários:
 
 | Nome | E-mail | Senha inicial | Situação |
 |---|---|---|---|
-| Administrador | `admin@clinica` | `Clinica@123` | Ativo |
-| Veterinária Ana | `ana@clinica` | `Clinica@123` | Ativo |
-| Recepção Carlos | `carlos@clinica` | `Clinica@123` | Ativo |
+| Administrador | `admin@clinica` | `1234` | Ativo |
+| Veterinária Ana | `ana@clinica` | `1234` | Ativo |
+| Recepção Carlos | `carlos@clinica` | `1234` | Ativo |
 
 Essas credenciais são **exclusivamente didáticas**. Não devem ser mantidas em ambientes publicados.
 
