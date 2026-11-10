@@ -10,7 +10,6 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
-const crypto = require('node:crypto');
 
 const BD = require('./db');
 const uploadPet = require('./lib/uploadPet');
@@ -50,7 +49,6 @@ app.use(session({
 
 // 4. UPLOAD DE FOTOGRAFIAS DOS PETS
 // Formulários com enctype multipart/form-data precisam do Multer.
-// A verificação de CSRF ocorre no middleware seguinte.
 app.use('/pets', (req, res, next) => {
     if (req.method !== 'POST') {
         return next();
@@ -63,34 +61,11 @@ app.use('/pets', (req, res, next) => {
     uploadPet.single('imagem')(req, res, next);
 });
 
-// 5. DADOS COMPARTILHADOS COM AS VIEWS E PROTEÇÃO CSRF
-// res.locals torna os valores disponíveis em todas as páginas EJS.
+// 5. DADOS COMPARTILHADOS COM AS VIEWS
+// O cabeçalho EJS precisa do usuário logado e da página atual.
 app.use((req, res, next) => {
-    res.locals.paginaAtiva = req.path.split('/')[1] || 'dashboard';
-
-    if (!req.session.csrf) {
-        req.session.csrf = crypto.randomBytes(24).toString('hex');
-    }
-
-    res.locals.csrf = req.session.csrf;
     res.locals.usuario = req.session.usuario || null;
-
-    // Requisições POST precisam enviar o token gerado na sessão.
-    if (req.method === 'POST') {
-        const tokenRecebido = String(req.body._csrf || '');
-        const tokenSessao = req.session.csrf;
-
-        const mesmoTamanho = tokenRecebido.length === tokenSessao.length;
-        const tokenValido = mesmoTamanho && crypto.timingSafeEqual(
-            Buffer.from(tokenRecebido),
-            Buffer.from(tokenSessao)
-        );
-
-        if (!tokenValido) {
-            return res.status(403).send('CSRF inválido');
-        }
-    }
-
+    res.locals.paginaAtiva = req.path.split('/')[1] || 'dashboard';
     next();
 });
 
@@ -158,8 +133,6 @@ app.post('/login', async (req, res, next) => {
                 nome: usuario.nome,
                 email: usuario.email
             };
-
-            req.session.csrf = crypto.randomBytes(24).toString('hex');
 
             res.redirect('/dashboard');
         });

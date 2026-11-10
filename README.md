@@ -19,7 +19,6 @@ O sistema conta com uma **landing page pública**, identidade visual com logo pr
 - Expiração do cookie após **30 minutos de inatividade**.
 - Proteção das rotas administrativas e logout.
 - Regeneração da sessão no login.
-- Formulários POST com token de proteção CSRF.
 
 ### 🏠 Painel principal
 - Identificação do usuário logado pelo nome.
@@ -474,9 +473,12 @@ A apresentação visual usa como referência o projeto Eventos:
 
 ## CRUD de usuários e interface administrativa
 
-O painel agora utiliza barra lateral roxa, cartões de indicadores, saudação no topo e menu lateral com **Dashboard, Tutores, Pets, Agendamentos e Usuários**. As listagens possuem botões **Editar** e **Excluir**; exclusões utilizam POST com token CSRF e confirmação. A exclusão de tutores ou pets com registros relacionados é bloqueada pelas chaves estrangeiras do banco. O módulo de usuários permite cadastro, edição de dados e senha com bcrypt, ativação/desativação e exclusão (exceto da própria conta). Todas as rotas `/usuarios` também exigem sessão autenticada. Observação: ainda não há papéis/perfis administrativos diferenciados.
+O painel agora utiliza barra lateral roxa, cartões de indicadores, saudação no topo e menu lateral com **Dashboard, Tutores, Pets, Agendamentos e Usuários**. As listagens possuem botões **Editar** e **Excluir**; exclusões utilizam POST com confirmação. A exclusão de tutores ou pets com registros relacionados é bloqueada pelas chaves estrangeiras do banco. O módulo de usuários permite cadastro, edição de dados e senha com bcrypt, ativação/desativação e exclusão (exceto da própria conta). Todas as rotas `/usuarios` também exigem sessão autenticada. Observação: ainda não há papéis/perfis administrativos diferenciados.
 
 
 ## Listagens e indicadores
 
 Os quatro CRUDs utilizam pesquisa, ordenação por lista permitida e paginação no PostgreSQL com **5 registros por página**, como no projeto Eventos. Pet: filtro de espécie. Agendamento: situação e mês. Usuários: ativo/inativo. Os filtros são preservados entre as páginas. A agenda usa cards com fotografia; o dashboard exibe gráfico de status, espécies e evolução dos últimos seis meses, sem dependência externa de gráficos.
+
+
+> **Observação didática:** o sistema foi simplificado para uso exclusivamente local, sem tokens CSRF. Não deve ser publicado na internet sem revisão da proteção dos formulários.

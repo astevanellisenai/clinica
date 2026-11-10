@@ -1,5 +1,5 @@
 <%-include('../includes/header')%><div class="page-heading"><div><h1><%=titulo%></h1><p>Preencha os dados do animal e vincule seu tutor.</p></div></div>
-<section class="panel form-panel pet-form-panel"><form method="post" action="<%=acao%>" enctype="multipart/form-data"><input type="hidden" name="_csrf" value="<%=csrf%>">
+<section class="panel form-panel pet-form-panel"><form method="post" action="<%=acao%>" enctype="multipart/form-data">
 <div class="pet-form-grid"><div class="foto-upload"><label for="imagem">Foto do pet (opcional)</label><img id="preview" src="<%=registro.imagem_url?'/img/pets/'+registro.imagem_url:'/img/pets/sem-foto.svg'%>" alt="Prévia da imagem" class="preview-img"><input type="file" name="imagem" id="imagem" accept="image/jpeg,image/png,image/webp"><small>JPG, PNG ou WebP • máximo de 3 MB.</small></div>
 <div><div class="linha-formulario"><div class="campo-formulario"><label for="nome">Nome</label><input id="nome" required name="nome" value="<%=registro.nome||''%>"></div><div class="campo-formulario"><label for="especie">Espécie</label><input id="especie" required name="especie" value="<%=registro.especie||''%>"></div></div>
 <div class="campo-formulario"><label for="raca">Raça</label><input id="raca" name="raca" value="<%=registro.raca||''%>"></div>
