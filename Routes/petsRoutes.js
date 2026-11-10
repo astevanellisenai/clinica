@@ -38,4 +38,5 @@ r.post('/editar/:id',async(req,res,next)=>{
  res.redirect('/pets');
  }catch(e){if(req.file)await apagar(req.file.filename);next(e)}
 });
+r.post('/excluir/:id',async(req,res,next)=>{try{const {rows}=await db.query('SELECT imagem_url FROM pets WHERE id=$1',[req.params.id]);const result=await db.query('DELETE FROM pets WHERE id=$1',[req.params.id]);if(!result.rowCount)return res.sendStatus(404);if(rows[0]?.imagem_url)await apagar(rows[0].imagem_url);res.redirect('/pets')}catch(e){if(e.code==='23503')return res.status(409).send('Não é possível excluir este registro: existem dados relacionados. Volte e remova as dependências primeiro.');next(e)}});
 module.exports=r;

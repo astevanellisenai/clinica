@@ -1,10 +1,5 @@
-<!DOCTYPE html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Clínica Vet</title><link rel="stylesheet" href="/css/estilos.css"></head>
-<body><header class="admin-cabecalho"><div class="admin-container">
-<div class="admin-cabecalho-superior">
-<a href="/dashboard" class="admin-logo"><img src="/img/landing/logo.svg" alt="Clínica Vet"><span>Clínica Veterinária</span></a>
-<div class="usuario-acoes"><% if(usuario){ %><span>Olá, <strong><%=usuario.nome%></strong>!</span><form method="post" action="/logout"><input type="hidden" name="_csrf" value="<%=csrf%>"><button class="btn-sair" type="submit">Sair</button></form><% } else { %><a href="/login" class="btn-sair">Entrar</a><% } %></div>
-</div>
-<% if(usuario){ %><div class="admin-cabecalho-inferior"><nav class="admin-menu" aria-label="Navegação administrativa">
-<a href="/dashboard">Dashboard</a><a href="/tutores">Tutores</a><a href="/pets">Pets</a><a href="/agendamentos">Agendamentos</a>
-</nav></div><% } %>
-</div></header><main class="conteudo">
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Clínica Vet</title><link rel="stylesheet" href="/css/estilos.css"></head>
+<body class="admin-body"><div class="app-shell">
+<aside class="sidebar"><a class="side-brand" href="/dashboard"><span class="brand-icon">🐾</span><span>Clínica <b>Vet</b><small>Gestão veterinária</small></span></a><div class="side-label">MENU PRINCIPAL</div>
+<nav class="side-nav"><a class="<%=paginaAtiva==='dashboard'?'active':''%>" href="/dashboard">◫ <span>Dashboard</span></a><a class="<%=paginaAtiva==='tutores'?'active':''%>" href="/tutores">♙ <span>Tutores</span></a><a class="<%=paginaAtiva==='pets'?'active':''%>" href="/pets">♥ <span>Pets</span></a><a class="<%=paginaAtiva==='agendamentos'?'active':''%>" href="/agendamentos">▦ <span>Agendamentos</span></a><a class="<%=paginaAtiva==='usuarios'?'active':''%>" href="/usuarios">♟ <span>Usuários</span></a></nav><div class="sidebar-bottom"><div class="sidebar-note">♥ <strong>Amor em cada atendimento</strong><p>Cuidando de quem você ama.</p></div><a href="/landing">Página pública ↗</a></div></aside>
+<div class="main-shell"><header class="admin-topbar"><div class="topbar-left"><button class="menu-toggle" type="button" onclick="document.body.classList.toggle('sidebar-open')">☰</button><span>Clínica Vet <b> / <%=paginaAtiva%></b></span></div><div class="topbar-actions"><span class="avatar"><%=usuario.nome.slice(0,1).toUpperCase()%></span><div class="topbar-user"><small>Bem-vindo(a)</small><strong>Olá, <%=usuario.nome%>!</strong></div><form method="post" action="/logout"><input type="hidden" name="_csrf" value="<%=csrf%>"><button class="btn btn-logout">Sair</button></form></div></header><main class="conteudo">

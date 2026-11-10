@@ -13,10 +13,11 @@ app.use('/pets',(req,res,next)=>{
  if(!req.session.usuario) return res.redirect('/login');
  uploadPet.single('imagem')(req,res,next);
 });
-app.use((req,res,next)=>{if(!req.session.csrf)req.session.csrf=crypto.randomBytes(24).toString('hex');res.locals.csrf=req.session.csrf;res.locals.usuario=req.session.usuario||null;
+app.use((req,res,next)=>{res.locals.paginaAtiva=req.path.split('/')[1]||'dashboard';if(!req.session.csrf)req.session.csrf=crypto.randomBytes(24).toString('hex');res.locals.csrf=req.session.csrf;res.locals.usuario=req.session.usuario||null;
 if(req.method==='POST'){const x=String(req.body._csrf||''),y=req.session.csrf;if(x.length!==y.length||!crypto.timingSafeEqual(Buffer.from(x),Buffer.from(y)))return res.status(403).send('CSRF inválido');}next()});
 const login=(req,res,next)=>req.session.usuario?next():res.redirect('/login');
 app.get('/',(req,res)=>req.session.usuario ? res.redirect('/dashboard') : res.render('landing/index'));
+app.get('/landing',(req,res)=>res.render('landing/index'));
 app.get('/login',(req,res)=>res.render('login',{erro:null}));
 app.post('/login',async(req,res,next)=>{try{const {rows}=await db.query('SELECT id,nome,email,senha_hash FROM usuarios WHERE email=$1 AND situacao=1',[String(req.body.email||'').trim().toLowerCase()]);const u=rows[0];if(!u||!await bcrypt.compare(String(req.body.senha||''),u.senha_hash))return res.status(401).render('login',{erro:'E-mail ou senha inválidos'});req.session.regenerate(err=>{if(err)return next(err);req.session.usuario={id:u.id,nome:u.nome,email:u.email};req.session.csrf=crypto.randomBytes(24).toString('hex');res.redirect('/dashboard')})}catch(e){next(e)}});
 app.post('/logout',login,(req,res,next)=>req.session.destroy(e=>e?next(e):res.redirect('/login')));
@@ -32,6 +33,6 @@ app.get('/dashboard',login,async(req,res,next)=>{
    res.render('dashboard',{quantidades:[tutores.rows[0].total,pets.rows[0].total,agendamentos.rows[0].total],proximos:proximos.rows,status:status.rows});
  }catch(e){next(e)}
 });
-for(const nome of ['tutores','pets','agendamentos'])app.use('/'+nome,login,require('./Routes/'+nome+'Routes'));
+for(const nome of ['tutores','pets','agendamentos','usuarios'])app.use('/'+nome,login,require('./Routes/'+nome+'Routes'));
 app.use((err,req,res,next)=>{console.error(err);res.status(500).send('Erro interno no servidor')});
 app.listen(Number(process.env.PORT||3001),()=>console.log('Clínica: http://localhost:'+(process.env.PORT||3001)));

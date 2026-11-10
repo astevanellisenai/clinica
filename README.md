@@ -490,3 +490,8 @@ A apresentação visual usa como referência o projeto Eventos:
 - O formulário de pets aceita fotografia opcional de até 3 MB (JPG, PNG, WebP), com prévia antes de salvar.
 
 **Atenção:** atualizar o repositório não altera o banco PostgreSQL automaticamente. Quem já tem o banco `clinica` deve executar apenas `migrations/001_foto_pets.sql` para adicionar a coluna de foto sem apagar registros.
+
+
+## CRUD de usuários e interface administrativa
+
+O painel agora utiliza barra lateral roxa, cartões de indicadores, saudação no topo e menu lateral com **Dashboard, Tutores, Pets, Agendamentos e Usuários**. As listagens possuem botões **Editar** e **Excluir**; exclusões utilizam POST com token CSRF e confirmação. A exclusão de tutores ou pets com registros relacionados é bloqueada pelas chaves estrangeiras do banco. O módulo de usuários permite cadastro, edição de dados e senha com bcrypt, ativação/desativação e exclusão (exceto da própria conta). Todas as rotas `/usuarios` também exigem sessão autenticada. Observação: ainda não há papéis/perfis administrativos diferenciados.
