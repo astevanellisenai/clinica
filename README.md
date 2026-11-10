@@ -254,9 +254,9 @@ O script `clinica.sql` cria estes usuários:
 
 | Nome | E-mail | Senha inicial | Situação |
 |---|---|---|---|
-| Administrador | `admin@clinica.local` | `Clinica@123` | Ativo |
-| Veterinária Ana | `ana@clinica.local` | `Clinica@123` | Ativo |
-| Recepção Carlos | `carlos@clinica.local` | `Clinica@123` | Ativo |
+| Administrador | `admin@clinica` | `Clinica@123` | Ativo |
+| Veterinária Ana | `ana@clinica` | `Clinica@123` | Ativo |
+| Recepção Carlos | `carlos@clinica` | `Clinica@123` | Ativo |
 
 Essas credenciais são **exclusivamente didáticas**. Não devem ser mantidas em ambientes publicados.
 
@@ -418,7 +418,7 @@ Após executar a instalação, confira o seguinte fluxo:
 
 1. Acesse `/dashboard` sem estar autenticado e confirme o redirecionamento para `/login`.
 2. Tente fazer login com senha incorreta; o sistema deve apresentar uma mensagem de erro.
-3. Entre com `admin@clinica.local` e a senha didática.
+3. Entre com `admin@clinica` e a senha didática.
 4. Confira o nome do usuário e as contagens no painel.
 5. Acesse `/tutores`, pesquise um nome e edite o registro.
 6. Cadastre um pet vinculando-o a um tutor.
