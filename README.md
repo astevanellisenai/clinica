@@ -101,15 +101,18 @@ clinica/
 │   │   └── footer.ejs
 │   ├── tutores/
 │   │   ├── index.ejs
-│   │   └── form.ejs
+│   │   ├── novo.ejs
+│   │   └── editar.ejs
 │   ├── pets/
 │   │   ├── index.ejs
-│   │   └── form.ejs
+│   │   ├── novo.ejs
+│   │   └── editar.ejs
 │   ├── landing/
 │   │   └── index.ejs
 │   ├── agendamentos/
 │   │   ├── index.ejs
-│   │   └── form.ejs
+│   │   ├── novo.ejs
+│   │   └── editar.ejs
 │   ├── login.ejs
 │   └── dashboard.ejs
 │
@@ -482,3 +485,8 @@ Os quatro CRUDs utilizam pesquisa, ordenação por lista permitida e paginação
 
 
 > **Observação didática:** o sistema foi simplificado para uso exclusivamente local, sem tokens CSRF. Não deve ser publicado na internet sem revisão da proteção dos formulários.
+
+
+## Organização dos formulários (padrão Eventos)
+
+Cada módulo possui os arquivos `index.ejs` (listagem), `novo.ejs` (cadastro) e `editar.ejs` (edição). As rotas GET `/novo` e `/editar/:id` carregam as respectivas views; os formulários POST enviam os dados às rotas de gravação. Os arquivos genéricos `form.ejs` não são mais utilizados.

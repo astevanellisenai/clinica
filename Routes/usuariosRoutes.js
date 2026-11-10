@@ -81,7 +81,7 @@ router.post('/novo', async (req, res, next) => {
     // Validação simples dos campos obrigatórios.
     if (!usuario.nome || !usuario.email || !usuario.senha ||
         ![0, 1].includes(usuario.situacao)) {
-        return res.status(400).render('usuarios/form', {
+        return res.status(400).render('usuarios/novo', {
             registro: usuario,
             titulo: 'Novo usuário',
             acao: '/usuarios/novo',
@@ -107,7 +107,7 @@ router.post('/novo', async (req, res, next) => {
     } catch (erro) {
         // Erro 23505: e-mail já cadastrado (UNIQUE).
         if (erro.code === '23505') {
-            return res.status(400).render('usuarios/form', {
+            return res.status(400).render('usuarios/novo', {
                 registro: usuario,
                 titulo: 'Novo usuário',
                 acao: '/usuarios/novo',
@@ -153,7 +153,7 @@ router.post('/editar/:id', async (req, res, next) => {
     if (!usuario.nome || !usuario.email ||
         ![0, 1].includes(usuario.situacao) ||
         (propriaConta && usuario.situacao === 0)) {
-        return res.status(400).render('usuarios/form', {
+        return res.status(400).render('usuarios/editar', {
             registro: { ...usuario, id },
             titulo: 'Editar usuário',
             acao: '/usuarios/editar/' + id,
@@ -205,7 +205,7 @@ router.post('/editar/:id', async (req, res, next) => {
         res.redirect('/usuarios');
     } catch (erro) {
         if (erro.code === '23505') {
-            return res.status(400).render('usuarios/form', {
+            return res.status(400).render('usuarios/novo', {
                 registro: { ...usuario, id },
                 titulo: 'Editar usuário',
                 acao: '/usuarios/editar/' + id,
