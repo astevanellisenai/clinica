@@ -1,37 +1,209 @@
-const r=require('express').Router(),db=require('../db'),{decifrar}=require('../lib/cpf');
-const {parametros,consultar}=require('../lib/listagem');
+// ============================================================
+// AGENDAMENTOS - CRUD COMPLETO
+// Rotas para listar, cadastrar, editar e excluir consultas.
+// ============================================================
 
-r.get('/',async(req,res,next)=>{
- try {
-  const ordens={
-   data:'a.data_agendamento ASC,a.id ASC',
-   data_desc:'a.data_agendamento DESC,a.id DESC',
-   pet:'p.nome ASC,a.data_agendamento ASC',
-   tutor:'t.nome ASC,a.data_agendamento ASC',
-   status:'a.status ASC,a.data_agendamento ASC'
-  };
-  const q=parametros(req.query,ordens,'data');
-  const filtro=['agendado','concluido','cancelado'].includes(q.filtro)?q.filtro:'';
-  const values=['%'+q.busca+'%'];
-  let where="(p.nome ILIKE $1 OR t.nome ILIKE $1 OR a.descricao ILIKE $1)";
-  if(filtro){values.push(filtro);where+=' AND a.status=$'+values.length;}
-  if(q.mes){
-   values.push(q.mes+'-01');
-   where+=" AND a.data_agendamento >= $"+values.length+"::date AND a.data_agendamento < ($"+values.length+"::date + INTERVAL '1 month')";
-  }
-  const dados=await consultar(db,{
-   from:'agendamentos a JOIN pets p ON a.pet_id=p.id JOIN tutores t ON p.tutor_id=t.id',
-   where,values,
-   select:'a.*,p.nome AS pet_nome,p.especie,p.raca,p.imagem_url,t.nome AS tutor_nome,t.email,t.telefone',
-   order:ordens[q.ordem],pagina:q.pagina
-  });
-  res.render('agendamentos/index',{...dados,...q,filtro,pagina:dados.pagina});
- }catch(e){next(e)}
+const express = require('express');
+const router = express.Router();
+const BD = require('../db');
+const { parametros, consultar } = require('../lib/listagem');
+
+// 1. LISTAR COM PESQUISA, FILTROS E PAGINAÇÃO
+router.get('/', async (req, res, next) => {
+    try {
+        // O usuário escolhe apenas uma das ordenações permitidas.
+        const ordens = {
+            data: 'a.data_agendamento ASC, a.id ASC',
+            data_desc: 'a.data_agendamento DESC, a.id DESC',
+            pet: 'p.nome ASC, a.data_agendamento ASC',
+            tutor: 't.nome ASC, a.data_agendamento ASC',
+            status: 'a.status ASC, a.data_agendamento ASC'
+        };
+
+        const filtros = parametros(req.query, ordens, 'data');
+        const situacoes = ['agendado', 'concluido', 'cancelado'];
+        const filtro = situacoes.includes(filtros.filtro)
+            ? filtros.filtro : '';
+
+        // A pesquisa começa pelo parâmetro $1.
+        const valores = ['%' + filtros.busca + '%'];
+        let condicao = `(
+            p.nome ILIKE $1 OR
+            t.nome ILIKE $1 OR
+            a.descricao ILIKE $1
+        )`;
+
+        // Filtro por situação do atendimento.
+        if (filtro) {
+            valores.push(filtro);
+            condicao += ' AND a.status = $' + valores.length;
+        }
+
+        // Filtro por mês (exemplo: 2026-12).
+        if (filtros.mes) {
+            valores.push(filtros.mes + '-01');
+            const posicao = valores.length;
+
+            condicao += `
+                AND a.data_agendamento >= $${posicao}::date
+                AND a.data_agendamento < (
+                    $${posicao}::date + INTERVAL '1 month'
+                )
+            `;
+        }
+
+        // O JOIN permite mostrar nome, tutor e foto do pet.
+        const resultado = await consultar(BD, {
+            from: `
+                agendamentos a
+                INNER JOIN pets p ON a.pet_id = p.id
+                INNER JOIN tutores t ON p.tutor_id = t.id
+            `,
+            where: condicao,
+            values: valores,
+            select: `
+                a.*,
+                p.nome AS pet_nome,
+                p.especie,
+                p.raca,
+                p.imagem_url,
+                t.nome AS tutor_nome,
+                t.email,
+                t.telefone
+            `,
+            order: ordens[filtros.ordem],
+            pagina: filtros.pagina
+        });
+
+        res.render('agendamentos/index', {
+            ...resultado,
+            ...filtros,
+            filtro,
+            pagina: resultado.pagina
+        });
+    } catch (erro) {
+        next(erro);
+    }
 });
-async function formulario(req,res,next,registro={},titulo='Novo agendamento',acao='/agendamentos/novo'){try{const {rows}=await db.query('SELECT p.id,p.nome,t.nome AS tutor_nome FROM pets p JOIN tutores t ON p.tutor_id=t.id ORDER BY t.nome,p.nome');res.render('agendamentos/form',{registro,titulo,acao,pets:rows})}catch(e){next(e)}}
-r.get('/novo',(req,res,next)=>formulario(req,res,next));
-r.post('/novo',async(req,res,next)=>{try{const {pet_id,data_agendamento,descricao,status}=req.body;await db.query('INSERT INTO agendamentos(pet_id,data_agendamento,descricao,status) VALUES($1,$2,$3,$4)',[pet_id,data_agendamento,descricao,status]);res.redirect('/agendamentos')}catch(e){next(e)}});
-r.get('/editar/:id',async(req,res,next)=>{try{const {rows}=await db.query("SELECT *,to_char(data_agendamento,'YYYY-MM-DD\"T\"HH24:MI') AS data_formatada FROM agendamentos WHERE id=$1",[req.params.id]);if(!rows.length)return res.sendStatus(404);formulario(req,res,next,rows[0],'Editar agendamento','/agendamentos/editar/'+req.params.id)}catch(e){next(e)}});
-r.post('/editar/:id',async(req,res,next)=>{try{const {pet_id,data_agendamento,descricao,status}=req.body;await db.query('UPDATE agendamentos SET pet_id=$1,data_agendamento=$2,descricao=$3,status=$4 WHERE id=$5',[pet_id,data_agendamento,descricao,status,req.params.id]);res.redirect('/agendamentos')}catch(e){next(e)}});
-r.post('/excluir/:id',async(req,res,next)=>{try{const result=await db.query('DELETE FROM agendamentos WHERE id=$1',[req.params.id]);if(!result.rowCount)return res.sendStatus(404);res.redirect('/agendamentos')}catch(e){if(e.code==='23503')return res.status(409).send('Não é possível excluir este registro: existem dados relacionados. Volte e remova as dependências primeiro.');next(e)}});
-module.exports=r;
+
+// Busca os pets para preencher o SELECT no formulário.
+async function abrirFormulario(req, res, next, registro = {},
+    titulo = 'Novo agendamento', acao = '/agendamentos/novo') {
+    try {
+        const resultado = await BD.query(`
+            SELECT p.id, p.nome, t.nome AS tutor_nome
+            FROM pets p
+            INNER JOIN tutores t ON p.tutor_id = t.id
+            ORDER BY t.nome, p.nome
+        `);
+
+        res.render('agendamentos/form', {
+            registro: registro,
+            titulo: titulo,
+            acao: acao,
+            pets: resultado.rows
+        });
+    } catch (erro) {
+        next(erro);
+    }
+}
+
+// 2. MOSTRAR FORMULÁRIO PARA UM NOVO AGENDAMENTO
+router.get('/novo', (req, res, next) => {
+    abrirFormulario(req, res, next);
+});
+
+// 3. SALVAR O NOVO AGENDAMENTO
+router.post('/novo', async (req, res, next) => {
+    try {
+        const { pet_id, data_agendamento, descricao, status } = req.body;
+
+        await BD.query(`
+            INSERT INTO agendamentos (
+                pet_id, data_agendamento, descricao, status
+            )
+            VALUES ($1, $2, $3, $4)
+        `, [pet_id, data_agendamento, descricao, status]);
+
+        res.redirect('/agendamentos');
+    } catch (erro) {
+        next(erro);
+    }
+});
+
+// 4. MOSTRAR FORMULÁRIO PARA EDITAR
+router.get('/editar/:id', async (req, res, next) => {
+    try {
+        // datetime-local recebe uma data no formato YYYY-MM-DDTHH:MM.
+        const resultado = await BD.query(`
+            SELECT *,
+                TO_CHAR(
+                    data_agendamento,
+                    'YYYY-MM-DD"T"HH24:MI'
+                ) AS data_formatada
+            FROM agendamentos
+            WHERE id = $1
+        `, [req.params.id]);
+
+        if (resultado.rows.length === 0) {
+            return res.sendStatus(404);
+        }
+
+        await abrirFormulario(
+            req,
+            res,
+            next,
+            resultado.rows[0],
+            'Editar agendamento',
+            '/agendamentos/editar/' + req.params.id
+        );
+    } catch (erro) {
+        next(erro);
+    }
+});
+
+// 5. SALVAR ALTERAÇÕES
+router.post('/editar/:id', async (req, res, next) => {
+    try {
+        const { pet_id, data_agendamento, descricao, status } = req.body;
+
+        await BD.query(`
+            UPDATE agendamentos
+            SET pet_id = $1,
+                data_agendamento = $2,
+                descricao = $3,
+                status = $4
+            WHERE id = $5
+        `, [
+            pet_id,
+            data_agendamento,
+            descricao,
+            status,
+            req.params.id
+        ]);
+
+        res.redirect('/agendamentos');
+    } catch (erro) {
+        next(erro);
+    }
+});
+
+// 6. EXCLUIR AGENDAMENTO
+router.post('/excluir/:id', async (req, res, next) => {
+    try {
+        const resultado = await BD.query(`
+            DELETE FROM agendamentos
+            WHERE id = $1
+        `, [req.params.id]);
+
+        if (resultado.rowCount === 0) {
+            return res.sendStatus(404);
+        }
+
+        res.redirect('/agendamentos');
+    } catch (erro) {
+        next(erro);
+    }
+});
+
+module.exports = router;
