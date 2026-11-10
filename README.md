@@ -248,8 +248,6 @@ O arquivo **`clinica.sql` cria e popula todas as quatro tabelas**:
 
 Os CPFs fictícios dos tutores foram previamente criptografados em AES-256-GCM e estão inseridos no SQL em formato cifrado, compatível com a chave didática do `.env`.
 
-As fotos demonstrativas de Mel, Luna e Thor são referenciadas no `clinica.sql` pelos nomes `mel.jpg`, `luna.jpg` e `thor.jpg`. Para que apareçam nas telas, esses arquivos devem existir em `Public/img/pets/`. O banco armazena apenas o nome do arquivo, não a imagem.
-
 ### 7. Iniciar a aplicação
 
 ```bash
@@ -472,7 +470,7 @@ A apresentação visual usa como referência o projeto Eventos:
 - Logo em `Public/img/landing/logo.svg`; ilustração em `Public/img/landing/hero.svg`.
 - O formulário de pets aceita fotografia opcional de até 3 MB (JPG, PNG, WebP), com prévia antes de salvar.
 
-**Atenção:** atualizar o código pelo Git não modifica o PostgreSQL. Para um banco novo, execute apenas `clinica.sql`, que contém todas as tabelas e os registros de exemplo. Se já tiver dados, use somente o `ALTER TABLE` mostrado acima para preservar os registros.
+**Atenção:** atualizar o código pelo Git não modifica o PostgreSQL. Para um banco novo, execute apenas `clinica.sql`, que contém todas as tabelas e os registros de exemplo. Não execute esse script em um banco que contenha dados que precisam ser preservados.
 
 
 ## CRUD de usuários e interface administrativa
