@@ -33,3 +33,19 @@ INSERT INTO agendamentos(pet_id,data_agendamento,descricao,status) VALUES
 ((SELECT id FROM pets WHERE nome='Mel'),'2026-12-02 09:00','Vacinação anual','agendado'),
 ((SELECT id FROM pets WHERE nome='Luna'),'2026-12-11 14:30','Consulta','agendado'),
 ((SELECT id FROM pets WHERE nome='Thor'),'2027-01-08 10:00','Exames','agendado');
+
+-- =====================================================
+-- FOTOS DOS PETS DE EXEMPLO
+-- Os arquivos mel.jpg, luna.jpg e thor.jpg devem estar
+-- em Public/img/pets/ no projeto local.
+-- Estes UPDATEs podem ser repetidos sem duplicar dados.
+-- Para bancos existentes, execute SOMENTE este bloco.
+-- =====================================================
+UPDATE pets SET imagem_url = 'mel.jpg'
+WHERE nome = 'Mel' AND especie = 'Cachorro';
+
+UPDATE pets SET imagem_url = 'luna.jpg'
+WHERE nome = 'Luna' AND especie = 'Gato';
+
+UPDATE pets SET imagem_url = 'thor.jpg'
+WHERE nome = 'Thor' AND especie = 'Cachorro';

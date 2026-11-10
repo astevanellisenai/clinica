@@ -499,3 +499,15 @@ O painel agora utiliza barra lateral roxa, cartões de indicadores, saudação n
 ## Listagens e indicadores
 
 Os quatro CRUDs utilizam pesquisa, ordenação por lista permitida e paginação no PostgreSQL com **5 registros por página**, como no projeto Eventos. Pet: filtro de espécie. Agendamento: situação e mês. Usuários: ativo/inativo. Os filtros são preservados entre as páginas. A agenda usa cards com fotografia; o dashboard exibe gráfico de status, espécies e evolução dos últimos seis meses, sem dependência externa de gráficos.
+
+### Fotos dos pets demonstrativos no banco local
+
+O `clinica.sql` já contém os UPDATEs dos três pets de demonstração (Mel, Luna e Thor). **Para uma instalação existente, não execute o arquivo inteiro**, pois ele contém `DROP TABLE`. Execute apenas estes comandos no pgAdmin, conectando ao banco `clinica`:
+
+```sql
+UPDATE pets SET imagem_url = 'mel.jpg' WHERE nome = 'Mel' AND especie = 'Cachorro';
+UPDATE pets SET imagem_url = 'luna.jpg' WHERE nome = 'Luna' AND especie = 'Gato';
+UPDATE pets SET imagem_url = 'thor.jpg' WHERE nome = 'Thor' AND especie = 'Cachorro';
+```
+
+Extraia as fotos do pacote `clinica_imagens_prontas.zip` para a pasta `Public/img/pets/` do computador local. O SQL guarda apenas o **nome** de cada arquivo, não seus bytes. O Git não versiona fotos nessa pasta por padrão. Confira com `SELECT nome, imagem_url FROM pets ORDER BY nome;`.
