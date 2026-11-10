@@ -28,27 +28,6 @@ async function apagarImagem(nome) {
     }
 }
 
-// Carrega os tutores utilizados no formulário de pet.
-async function abrirFormulario(req, res, next, registro = {},
-    titulo = 'Novo pet', acao = '/pets/novo') {
-    try {
-        const resultado = await BD.query(`
-            SELECT id, nome
-            FROM tutores
-            ORDER BY nome
-        `);
-
-        res.render('pets/form', {
-            registro,
-            titulo,
-            acao,
-            tutores: resultado.rows
-        });
-    } catch (erro) {
-        next(erro);
-    }
-}
-
 // 1. LISTAR PETS
 router.get('/', async (req, res, next) => {
     try {
@@ -100,8 +79,13 @@ router.get('/', async (req, res, next) => {
 });
 
 // 2. ABRIR FORMULÁRIO DE CADASTRO
-router.get('/novo', (req, res, next) => {
-    abrirFormulario(req, res, next);
+router.get('/novo', async (req, res, next) => {
+    try {
+        const resultado = await BD.query('SELECT id, nome FROM tutores ORDER BY nome');
+        res.render('pets/novo', { tutores: resultado.rows });
+    } catch (erro) {
+        next(erro);
+    }
 });
 
 // 3. CADASTRAR PET
@@ -135,10 +119,11 @@ router.get('/editar/:id', async (req, res, next) => {
             return res.sendStatus(404);
         }
 
-        await abrirFormulario(
-            req, res, next, resultado.rows[0],
-            'Editar pet', '/pets/editar/' + req.params.id
-        );
+        const tutores = await BD.query('SELECT id, nome FROM tutores ORDER BY nome');
+        res.render('pets/editar', {
+            pet: resultado.rows[0],
+            tutores: tutores.rows
+        });
     } catch (erro) {
         next(erro);
     }

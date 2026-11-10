@@ -50,11 +50,7 @@ router.get('/', async (req, res, next) => {
 
 // 2. ABRIR FORMULÁRIO DE CADASTRO
 router.get('/novo', (req, res) => {
-    res.render('tutores/form', {
-        registro: {},
-        titulo: 'Novo tutor',
-        acao: '/tutores/novo'
-    });
+    res.render('tutores/novo');
 });
 
 // 3. CADASTRAR TUTOR
@@ -86,13 +82,11 @@ router.get('/editar/:id', async (req, res, next) => {
             return res.sendStatus(404);
         }
 
-        res.render('tutores/form', {
-            registro: {
+        res.render('tutores/editar', {
+            tutor: {
                 ...resultado.rows[0],
                 cpf: decifrar(resultado.rows[0].cpf_criptografado)
-            },
-            titulo: 'Editar tutor',
-            acao: '/tutores/editar/' + req.params.id
+            }
         });
     } catch (erro) {
         next(erro);

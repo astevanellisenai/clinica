@@ -66,7 +66,7 @@ router.get('/', async (req, res, next) => {
 
 // 2. MOSTRAR FORMULÁRIO DE NOVO USUÁRIO
 router.get('/novo', (req, res) => {
-    res.render('usuarios/form', {
+    res.render('usuarios/novo', {
         registro: { situacao: 1 },
         titulo: 'Novo usuário',
         acao: '/usuarios/novo',
@@ -132,7 +132,7 @@ router.get('/editar/:id', async (req, res, next) => {
             return res.sendStatus(404);
         }
 
-        res.render('usuarios/form', {
+        res.render('usuarios/editar', {
             registro: resultado.rows[0],
             titulo: 'Editar usuário',
             acao: '/usuarios/editar/' + req.params.id,

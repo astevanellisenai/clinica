@@ -86,9 +86,8 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-// Busca os pets para preencher o SELECT no formulário.
-async function abrirFormulario(req, res, next, registro = {},
-    titulo = 'Novo agendamento', acao = '/agendamentos/novo') {
+// 2. MOSTRAR FORMULÁRIO PARA UM NOVO AGENDAMENTO
+router.get('/novo', async (req, res, next) => {
     try {
         const resultado = await BD.query(`
             SELECT p.id, p.nome, t.nome AS tutor_nome
@@ -96,21 +95,10 @@ async function abrirFormulario(req, res, next, registro = {},
             INNER JOIN tutores t ON p.tutor_id = t.id
             ORDER BY t.nome, p.nome
         `);
-
-        res.render('agendamentos/form', {
-            registro: registro,
-            titulo: titulo,
-            acao: acao,
-            pets: resultado.rows
-        });
+        res.render('agendamentos/novo', { pets: resultado.rows });
     } catch (erro) {
         next(erro);
     }
-}
-
-// 2. MOSTRAR FORMULÁRIO PARA UM NOVO AGENDAMENTO
-router.get('/novo', (req, res, next) => {
-    abrirFormulario(req, res, next);
 });
 
 // 3. SALVAR O NOVO AGENDAMENTO
@@ -149,14 +137,16 @@ router.get('/editar/:id', async (req, res, next) => {
             return res.sendStatus(404);
         }
 
-        await abrirFormulario(
-            req,
-            res,
-            next,
-            resultado.rows[0],
-            'Editar agendamento',
-            '/agendamentos/editar/' + req.params.id
-        );
+        const pets = await BD.query(`
+            SELECT p.id, p.nome, t.nome AS tutor_nome
+            FROM pets p
+            INNER JOIN tutores t ON p.tutor_id = t.id
+            ORDER BY t.nome, p.nome
+        `);
+        res.render('agendamentos/editar', {
+            agendamento: resultado.rows[0],
+            pets: pets.rows
+        });
     } catch (erro) {
         next(erro);
     }

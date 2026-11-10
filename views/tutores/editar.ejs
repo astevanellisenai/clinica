@@ -1,0 +1,35 @@
+<%- include('../includes/header') %>
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">CADASTROS</span>
+        <h1>Editar tutor</h1>
+        <p>Informações de contato do responsável pelo pet.</p>
+    </div>
+</div>
+<section class="panel form-panel">
+    <form method="post" action="/tutores/editar/<%= tutor.id %>">
+        <div class="form-grid">
+            <div class="campo-formulario">
+            <label for="nome">Nome</label>
+            <input id="nome" name="nome" type="text" required maxlength="120" value="<%= tutor.nome %>">
+        </div>
+            <div class="campo-formulario">
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" required maxlength="150" value="<%= tutor.email %>">
+        </div>
+            <div class="campo-formulario">
+            <label for="telefone">Telefone</label>
+            <input id="telefone" name="telefone" type="tel" maxlength="20" value="<%= tutor.telefone || '' %>">
+        </div>
+            <div class="campo-formulario">
+            <label for="cpf">CPF</label>
+            <input id="cpf" name="cpf" type="text" required maxlength="14" value="<%= tutor.cpf %>">
+        </div>
+        </div>
+        <div class="form-actions">
+        <a href="/tutores" class="btn btn-secondary">Cancelar</a>
+        <button class="btn" type="submit">Salvar tutor</button>
+    </div>
+    </form>
+</section>
+<%- include('../includes/footer') %>

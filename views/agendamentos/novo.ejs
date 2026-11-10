@@ -1,0 +1,44 @@
+<%- include('../includes/header') %>
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">CADASTROS</span>
+        <h1>Novo agendamento</h1>
+        <p>Organize a data, o pet e a situação da consulta.</p>
+    </div>
+</div>
+<section class="panel form-panel">
+    <form method="post" action="/agendamentos/novo">
+        <div class="form-grid">
+            <div class="campo-formulario">
+                <label for="pet_id">Pet / Tutor</label>
+                <select id="pet_id" name="pet_id" required>
+                    <option value="">Selecione</option>
+                    <% pets.forEach(pet => { %>
+                        <option value="<%= pet.id %>" ><%= pet.nome %> — <%= pet.tutor_nome %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="campo-formulario">
+            <label for="data_agendamento">Data e hora</label>
+            <input id="data_agendamento" name="data_agendamento" type="datetime-local" required >
+        </div>
+            <div class="campo-formulario">
+            <label for="descricao">Descrição</label>
+            <input id="descricao" name="descricao" required >
+        </div>
+            <div class="campo-formulario">
+                <label for="status">Situação</label>
+                <select id="status" name="status">
+                    <option value="agendado" >Agendado</option>
+                    <option value="concluido" >Concluído</option>
+                    <option value="cancelado" >Cancelado</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-actions">
+        <a href="/agendamentos" class="btn btn-secondary">Cancelar</a>
+        <button class="btn" type="submit">Salvar agendamento</button>
+    </div>
+    </form>
+</section>
+<%- include('../includes/footer') %>

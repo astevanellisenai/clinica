@@ -1,0 +1,63 @@
+<%- include('../includes/header') %>
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">CADASTROS</span>
+        <h1>Editar pet</h1>
+        <p>Informe os dados do animal e selecione seu tutor.</p>
+    </div>
+</div>
+<section class="panel form-panel pet-form-panel">
+    <form method="post" action="/pets/editar/<%= pet.id %>" enctype="multipart/form-data">
+        <div class="pet-form-grid">
+            <div class="foto-upload">
+                <label for="imagem">Foto do pet (opcional)</label>
+                <img id="preview" class="preview-img"
+                     src="<%= pet.imagem_url ? '/img/pets/' + pet.imagem_url : '/img/pets/sem-foto.svg' %>"
+                     alt="Prévia da imagem">
+                <input type="file" id="imagem" name="imagem" accept="image/jpeg,image/png,image/webp">
+                <small>JPG, PNG ou WebP • máximo de 3 MB.</small>
+            </div>
+            <div>
+                <div class="linha-formulario">
+                    <div class="campo-formulario">
+            <label for="nome">Nome</label>
+            <input id="nome" name="nome" required maxlength="100" value="<%= pet.nome %>">
+        </div>
+                    <div class="campo-formulario">
+            <label for="especie">Espécie</label>
+            <input id="especie" name="especie" required maxlength="70" value="<%= pet.especie %>">
+        </div>
+                </div>
+                <div class="campo-formulario">
+            <label for="raca">Raça</label>
+            <input id="raca" name="raca" maxlength="100" value="<%= pet.raca || '' %>">
+        </div>
+                <div class="campo-formulario">
+                    <label for="tutor_id">Tutor responsável</label>
+                    <select id="tutor_id" name="tutor_id" required>
+                        <option value="">Selecione o tutor</option>
+                        <% tutores.forEach(tutor => { %>
+                            <option value="<%= tutor.id %>" <%= Number(pet.tutor_id) === tutor.id ? 'selected' : '' %>><%= tutor.nome %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="form-actions">
+        <a href="/pets" class="btn btn-secondary">Cancelar</a>
+        <button class="btn" type="submit">Salvar pet</button>
+    </div>
+            </div>
+        </div>
+    </form>
+</section>
+<script>
+    // Mostra uma prévia da fotografia antes de enviar o formulário.
+    document.getElementById('imagem').addEventListener('change', function () {
+        const arquivo = this.files[0];
+        if (!arquivo) return;
+        const endereco = URL.createObjectURL(arquivo);
+        const imagem = document.getElementById('preview');
+        imagem.onload = () => URL.revokeObjectURL(endereco);
+        imagem.src = endereco;
+    });
+</script>
+<%- include('../includes/footer') %>
