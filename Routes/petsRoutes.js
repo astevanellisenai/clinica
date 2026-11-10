@@ -12,7 +12,7 @@ r.get('/',async(req,res,next)=>{
  const q=parametros(req.query,ordens,'nome');
  const filtro=['Cachorro','Gato','Outros'].includes(q.filtro)?q.filtro:'';
  const values=['%'+q.busca+'%'];let where='(p.nome ILIKE $1 OR p.especie ILIKE $1 OR COALESCE(p.raca,\'\') ILIKE $1 OR t.nome ILIKE $1)';
- if(filtro){values.push(filtro);where+=filtro==='Outros'?" AND p.especie NOT IN ('Cachorro','Gato')":' AND p.especie = $2';}
+ if(filtro){if(filtro==='Outros'){where+=" AND p.especie NOT IN ('Cachorro','Gato')";}else{values.push(filtro);where+=' AND p.especie = $2';}}
  const resultado=await consultar(db,{from:'pets p JOIN tutores t ON p.tutor_id=t.id',where,values,select:'p.*,t.nome AS tutor_nome',order:ordens[q.ordem],pagina:q.pagina});
  res.render('pets/index',{...resultado,...q,filtro,pagina:resultado.pagina});
  }catch(e){next(e)}
